@@ -33,14 +33,6 @@ it's to work at all.
  the instructions at
  https://git-scm.com/book/en/v2/Getting-Started-Installing-Git. 
 
- I'll assume going forward that you've installed =git=, and are capable
- of opening and functioning in a terminal.  With these two
- prerequisites satisfied, fork the git repository for LigonLab.
- Note that you *could* clone LigonLab directly from the =url= above, but our
- collective workflow instead is modeled on you working with a "fork".
- See the discussion at https://help.github.com/articles/fork-a-repo/
- if this idea is unfamiliar.
- 
  I'll assume going forward that you've:
    1. Installed =git=; 
    2. Are capable of opening and functioning in a terminal;
@@ -49,16 +41,26 @@ it's to work at all.
       | Your github user id: | ligon |
    4. And have "forked" LigonLab on github.
 
+ Note that you *could* clone LigonLab directly from the =url= above, but our
+ collective workflow instead is modeled on you working with a "fork".
+ See the discussion at https://help.github.com/articles/fork-a-repo/
+ if this idea is unfamiliar.
+ 
  With these prerequisites satisfied, at the command line you can check out the git
  repository for LigonLab by executing:
 
  #+begin_src sh :export code :var GITHUBUSER=githubuser[0,1]
  cd $HOME
  git clone https://github.com/$GITHUBUSER/LigonLab.git
+ cd LigonLab
+ git remote add upstream git://github.com/ligon/LigonLab.git
  #+end_src
 
  This should install the repository (containing this file!) from your
- forked version of LigonLab under your home directory.  
+ forked version of LigonLab under your home directory.  Your forked
+ version on =github= will be referred to as =origin=.  The final
+ command above also adds the original =ligon/LigonLab= repo, referred
+ to as =upstream=. 
 
 *** TODO Basic Git Use
 
