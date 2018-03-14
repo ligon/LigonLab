@@ -66,6 +66,7 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
 (setq
  my:el-get-packages
  '(el-get				; el-get is self-hosting
+   use-package
    switch-window			; takes over C-x o
    magit
    elpy
