@@ -38,7 +38,11 @@
 (let ((dir (file-name-directory (expand-file-name "~/.emacs.d/el-get/el-get-user/recipes/"))))
        (unless (file-directory-p dir)
          (make-directory dir))
-  (add-to-list 'el-get-recipe-path dir))
+       (add-to-list 'el-get-recipe-path dir))
+
+(require 'el-get-elpa)
+(unless (file-directory-p el-get-recipe-path-elpa)
+  (el-get-elpa-build-local-recipes))
 
 (el-get 'sync)
 

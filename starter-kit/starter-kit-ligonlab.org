@@ -75,6 +75,8 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
    auto-complete			; complete as you type with overlays
    yasnippet 				; powerful snippet mode
    ;zencoding-mode			; http://www.emacswiki.org/emacs/ZenCoding
+   org-mime                             ; not included in org+contrib?
+   tablist                              ; dependency for pdf-tools
    color-theme		                ; nice looking emacs
    color-theme-tango))	                ; check out color-theme-solarized
 
