@@ -68,6 +68,8 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
  '(el-get				; el-get is self-hosting
    use-package
    switch-window			; takes over C-x o
+   graphql                              ; dependency of magit
+   treepy                               ; dependency of magit
    magit
    elpy
    auto-complete			; complete as you type with overlays
