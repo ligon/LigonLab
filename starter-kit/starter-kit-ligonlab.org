@@ -77,6 +77,7 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
    ;zencoding-mode			; http://www.emacswiki.org/emacs/ZenCoding
    org-mime                             ; not included in org+contrib?
    tablist                              ; dependency for pdf-tools
+   ace-isearch
    color-theme		                ; nice looking emacs
    color-theme-tango))	                ; check out color-theme-solarized
 
@@ -98,7 +99,7 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
   Emacs on MacOS has an issue in setting the path it searches for
   executables correctly.  Here's an emacs module that purports to
   solve that problem.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (el-get-bundle elpa:exec-path-from-shell
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
