@@ -138,7 +138,7 @@ How to fork a file from LigonLab to your personal github fork:
 
 
 *** Emacs packages
-**** Managing packages with el-get    
+**** Managing packages with =el-get=
      The following code installs (if necessary) and initializes a
      package called =el-get= that... manages other packages.  
 
@@ -157,6 +157,19 @@ How to fork a file from LigonLab to your personal github fork:
 
         #+results:
 
+**** Adding =scimax=
+     The following installs an emacs package =scimax=:
+     #+begin_src sh
+     cd src
+     bash -c "$(curl -fsSL https://raw.githubusercontent.com/jkitchin/scimax/master/install-scimax-linux.sh)"
+     #+end_src
+
+     The next accomplishes some emacs setup of =scimax=.
+     #+begin_src emacs-lisp :tangle ~/.emacs.d/ligonlab.el
+     (setq scimax-dir (expand-file-name "~/.emacs.d/src/scimax"))
+     (add-to-list 'load-path (expand-file-name "~/.emacs.d/src/scimax"))
+     #+end_src
+     
 ** Hello world!
    Our goal here is simply to run a simple "Hello world!" program, but
    to do it from =emacs/orgmode=.  And since we're in the East Bay
