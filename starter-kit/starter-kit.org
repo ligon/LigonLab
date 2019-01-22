@@ -135,6 +135,9 @@ general starter-kit updates without conflict.
        hostname
      #+end_src
 
+     #+RESULTS:
+     : penguin
+
 - Activating more of the starter kit :: By default, the starter kit
      only includes customizations which are likely to be useful across
      nearly any Emacs install (the only automatically loaded external
@@ -281,13 +284,13 @@ interested in the actual code implementing the starter kit.
   #+end_src
 
 - ELPA archive repositories and two packages to install by default.
-  #+begin_src emacs-lisp
-        (setq package-archives
-              '(("gnu"         . "http://elpa.gnu.org/packages/")
-                ("org"         . "http://orgmode.org/elpa/")))
-                ;("melpa"       . "http://melpa.milkbox.net/packages/")))
-                ;("marmalade"   . "http://marmalade-repo.org/packages/")))
-        (package-initialize)
+  #+begin_src emacs-lisp :tangle no
+        ;(setq package-archives
+        ;      '(("gnu"         . "http://elpa.gnu.org/packages/")
+        ;        ("org"         . "http://orgmode.org/elpa/")))
+        ;        ("melpa"       . "http://melpa.milkbox.net/packages/")))
+        ;        ;("marmalade"   . "http://marmalade-repo.org/packages/")))
+        ;(package-initialize)
         
         (defvar starter-kit-packages nil
           "Libraries that should be installed by default (currently none).")
@@ -397,9 +400,6 @@ everyone using the starter kit.
   #+begin_src emacs-lisp
   (starter-kit-load "starter-kit-ligonlab.org")
   #+end_src
-
-  #+RESULTS:
-  : Loaded /home/ligon/.emacs.d/starter-kit-ligonlab.el
 
 ** Load User/System Specific Files
 *** System/User specific customizations

@@ -12,6 +12,8 @@
 ;; You may delete these explanatory comments.
 ;(package-initialize)
 
+(setq package-enable-at-startup nil)
+
 (server-start)
 
 ;; load Org-mode from source when the ORG_HOME environment variable is set
@@ -35,6 +37,10 @@
     (eval-print-last-sexp)))
 
 ;; Directory may not exist, in which case create it.
+(let ((dir (file-name-directory (expand-file-name "~/.emacs.d/el-get/el-get-user/"))))
+       (unless (file-directory-p dir)
+         (make-directory dir)))
+
 (let ((dir (file-name-directory (expand-file-name "~/.emacs.d/el-get/el-get-user/recipes/"))))
        (unless (file-directory-p dir)
          (make-directory dir))
@@ -44,7 +50,7 @@
 (unless (file-directory-p el-get-recipe-path-elpa)
   (el-get-elpa-build-local-recipes))
 
-(el-get 'sync)
+;(el-get 'sync) ; Premature?
 
 ;;load the starter kit from the `after-init-hook' so all packages are loaded
 (add-hook 'after-init-hook

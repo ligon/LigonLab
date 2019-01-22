@@ -1,3 +1,10 @@
+* Start with initial frame maximized
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'initial-frame-alist '(fullscreen . fullwidth))
+#+END_SRC
+
+#+RESULTS:
+
 * Other starter kit bits to load for basic LigonLab use
   Here indicate starter-kits to load by default.
   #+begin_src emacs-lisp
@@ -25,6 +32,8 @@
             (latex . nil))))                                           
    #+end_src                                                           
 
+   #+RESULTS:
+
    You'll probably want to execute the following, but consider that
    this may create a security issue.
    #+begin_src emacs-lisp :tangle yes
@@ -34,34 +43,38 @@
    (setq org-confirm-babel-evaluate nil)
    #+end_src
 
+   #+RESULTS:
+
 * ELPA Package Archives
  #+BEGIN_SRC emacs-lisp :tangle yes
  ;(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
- (add-to-list 'package-archives
-              '("melpa-stable" . "https://stable.melpa.org/packages/") t)
- (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t) ; Org-mode's
+ (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+ (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t) ; Org-mode's
  #+END_SRC
+
+ #+RESULTS:
 
 * Further mussing with =el-get=
 The following uses the =el-get= mechanism to initialize a set of
 recipes, and then to install a series of packages (=buffer-move=, =magit=
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (require 'el-get-elpa)
 (el-get-elpa-build-local-recipes)
 
 (setq
  el-get-sources
- '((:name buffer-move			; have to add your own keys
-	  :after (progn
-		   (global-set-key (kbd "<C-S-up>")     'buf-move-up)
-		   (global-set-key (kbd "<C-S-down>")   'buf-move-down)
-		   (global-set-key (kbd "<C-S-left>")   'buf-move-left)
-		   (global-set-key (kbd "<C-S-right>")  'buf-move-right)))))
+ '(
+   ;(:name buffer-move			; have to add your own keys
+   ;	  :after (progn
+   ;		   (global-set-key (kbd "<C-S-up>")     'buf-move-up)
+   ;		   (global-set-key (kbd "<C-S-down>")   'buf-move-down)
+   ;		   (global-set-key (kbd "<C-S-left>")   'buf-move-left)
+   ;		   (global-set-key (kbd "<C-S-right>")  'buf-move-right)))))
 
-;   (:name magit				; git meet emacs, and a binding
-;	  :type elpa
-;          :before (global-set-key (kbd "C-x g") magit-status)
-;	  :depends (dash emacs-async ghub let-alist magit-popup with-editor async))))
+   (:name magit				; git meet emacs, and a binding
+   	  :type elpa
+         :before (global-set-key (kbd "C-x g") magit-status)
+   	  :depends (dash emacs-async ghub git-commit with-editor let-alist magit-popup with-editor async))))
 
 (setq
  my:el-get-packages
@@ -70,7 +83,8 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
    switch-window			; takes over C-x o
    graphql                              ; dependency of magit
    treepy                               ; dependency of magit
-   magit
+   with-editor                          ; dependency of magit
+  ; magit
    elpy
    auto-complete			; complete as you type with overlays
    yasnippet 				; powerful snippet mode
@@ -89,7 +103,12 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
 ;; install new packages and init already installed packages
 (el-get 'sync my:el-get-packages)
 
+
+
 #+END_SRC
+
+#+RESULTS:
+
 * Magit-status global key
 #+BEGIN_SRC emacs-lisp
 (require 'magit)
