@@ -4,6 +4,7 @@
 #+END_SRC
 
 #+RESULTS:
+: ((fullscreen . fullwidth) (fullscreen . maximized))
 
 * Other starter kit bits to load for basic LigonLab use
   Here indicate starter-kits to load by default.
@@ -18,8 +19,8 @@
     (quote org-babel-load-languages)                                   
     (quote ((emacs-lisp . t)                                           
             (python . t)                                               
-            ;(shell . t) ; If an error, trying commenting this line...  
-            (sh . t)   ; ...and uncommenting this one.                
+            (shell . t) ; If an error, trying commenting this line...  
+            ;(sh . t)   ; ...and uncommenting this one.                
             (org . t)                                                  
             (dot . nil)                                                
             (ditaa . nil)                                              
@@ -114,6 +115,10 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
 (require 'magit)
 (global-set-key (kbd "C-x g") 'magit-status)
 #+END_SRC
+
+#+RESULTS:
+: magit-status
+
 * Fix for problem with exec-path on MacOS
   Emacs on MacOS has an issue in setting the path it searches for
   executables correctly.  Here's an emacs module that purports to
@@ -128,9 +133,12 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
 
 * Install org-contrib
   Note that this should come /after/ setup of [[*ELPA Package Archives][ELPA Package Archives]]
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
 (el-get-bundle elpa:org-plus-contrib)
 #+END_SRC
+
+#+RESULTS:
+
 * Some =org-mode= additions
 ** Use inline tasks
 #+begin_src emacs-lisp
@@ -140,3 +148,5 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
 #+begin_src emacs-lisp
 (setq org-drawers (quote ("PROPERTIES" "LOGBOOK" "SETUP")))
 #+end_src
+
+
