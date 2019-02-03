@@ -1,76 +1,54 @@
-;;; init.el --- Where all the magic begins
-;;
-;; Part of the LigonLab Starter Kit, derived from
-;; http://eschulte.github.io/emacs24-starter-kit/
-;;
-;; This is the first thing to get loaded.
-;;
+;; Use a hook so the message doesn't get clobbered by other messages.
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "Emacs ready in %s with %d garbage collections."
+                     (format "%.2f seconds"
+                             (float-time
+                              (time-subtract after-init-time before-init-time)))
+                     gcs-done)))
 
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-;(package-initialize)
+(let ((file-name-handler-alist nil))  ; this is open, and closed only in epilogue
 
-(setq package-enable-at-startup nil)
+(setq gc-cons-threshold most-positive-fixnum)
 
-(server-start)
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file)
 
-;; 24.1 needs this for compatibility?
-;(require 'org-compat)
+(customize-set-variable 'package-archives
+                        '(;;("gnu"       . "https://elpa.gnu.org/packages/")
+                          ;;("marmalade" . "https://marmalade-repo.org/packages/")
+                          ("melpa"     . "https://melpa.org/packages/")
+			  ("org"	 . "http://orgmode.org/elpa/")))
 
-;; Install (if necessary) & initialize el-get
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/el-get/el-get"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/el-get/org-plus-contrib"))
+(package-initialize)
 
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
+(when (not package-archive-contents)
+  (package-refresh-contents))
 
-;; Directory may not exist, in which case create it.
-(let ((dir (file-name-directory (expand-file-name "~/.emacs.d/el-get/el-get-user/"))))
-       (unless (file-directory-p dir)
-         (make-directory dir)))
+(when (not (package-installed-p 'use-package))
+  (package-install 'use-package))
 
-(let ((dir (file-name-directory (expand-file-name "~/.emacs.d/el-get/el-get-user/recipes/"))))
-       (unless (file-directory-p dir)
-         (make-directory dir))
-       (add-to-list 'el-get-recipe-path dir))
+(require 'use-package)
 
-(require 'el-get-elpa)
-(unless (file-directory-p el-get-recipe-path-elpa)
-  (el-get-elpa-build-local-recipes))
+(customize-set-variable 'use-package-always-ensure t)
 
-(require 'org)
+(customize-set-variable 'use-package-always-defer t)
 
-(load-file "~/.emacs.d/el-get/org-plus-contrib/org-element.el")
-(load-file "~/.emacs.d/el-get/org-plus-contrib/org.el")
+(customize-set-variable 'use-package-verbose t)
 
-;(el-get 'sync) ; Premature?
+(customize-set-variable 'load-prefer-newer t)
+(use-package auto-compile
+  :defer nil
+  :config (auto-compile-on-load-mode))
 
+(add-to-list 'load-path "~/.emacs.d/src")
 
-;; load Org-mode from source when the ORG_HOME environment variable is set
-;(when (getenv "ORG_HOME")
-;  (let ((org-lisp-dir (getenv "ORG_HOME")))
-;    (when (file-directory-p org-lisp-dir)
-;      (add-to-list 'load-path org-lisp-dir)
-;      (require 'org))))
+(use-package org
+  :mode ("\\*.org$" . org-mode)
+  :ensure org-plus-contrib
+  :defer t)
 
-(org-reload)
+(setq starter-kit-dir (expand-file-name "~/.emacs.d/"))
+(org-babel-load-file (expand-file-name "starter-kit.org" starter-kit-dir))
 
-;;load the starter kit from the `after-init-hook' so all packages are loaded
-(add-hook 'after-init-hook
- `(lambda ()
-    ;; remember this directory
-    (setq starter-kit-dir (file-name-directory (or load-file-name (buffer-file-name))))
-    ;; only load org-mode later if we didn't load it just now
-    ,(unless (and (getenv "ORG_HOME")
-                  (file-directory-p (getenv "ORG_HOME")))
-       '(require 'org))
-    ;; load up the starter kit
-    (org-babel-load-file (expand-file-name "starter-kit.org" starter-kit-dir))))
-
-;;; init.el ends here
+)

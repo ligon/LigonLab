@@ -11,7 +11,12 @@ Things that don't fit anywhere else.
 Determine whether required packages are installed. If not, use ELPA to
 install them. Other dependencies are provided by Emacs 24.
 #+begin_src emacs-lisp
-  (el-get-bundle 'magit)
+(use-package magit
+  :commands magit-get-top-dir
+  :bind (("C-c g" . magit-status)
+         ("C-c C-g l" . magit-file-log)
+         ("C-c f" . magit-grep))
+)
 #+end_src
 
 ** Color Themes

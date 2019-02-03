@@ -1,5 +1,7 @@
+#+PROPERTY: header-args:emacs-lisp :tangle yes
+
 * Start with initial frame maximized
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
 (add-to-list 'initial-frame-alist '(fullscreen . fullwidth))
 #+END_SRC
 
@@ -8,7 +10,7 @@
 
 * Other starter kit bits to load for basic LigonLab use
   Here indicate starter-kits to load by default.
-  #+begin_src emacs-lisp
+  #+begin_src emacs-lisp :tangle yes
   (starter-kit-load "python") ;; Breaks w/emacs24?; see http://python.6.n6.nabble.com/problem-with-byte-code-td2012559.html for possible work-around
   (starter-kit-load "org")
   #+end_src
@@ -47,7 +49,7 @@
    #+RESULTS:
 
 * ELPA Package Archives
- #+BEGIN_SRC emacs-lisp :tangle yes
+ #+BEGIN_SRC emacs-lisp :tangle no
  ;(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
  (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t) ; Org-mode's
@@ -55,64 +57,9 @@
 
  #+RESULTS:
 
-* Further mussing with =el-get=
-The following uses the =el-get= mechanism to initialize a set of
-recipes, and then to install a series of packages (=buffer-move=, =magit=
-#+BEGIN_SRC emacs-lisp :tangle no
-(require 'el-get-elpa)
-(el-get-elpa-build-local-recipes)
-
-(setq
- el-get-sources
- '(
-   ;(:name buffer-move			; have to add your own keys
-   ;	  :after (progn
-   ;		   (global-set-key (kbd "<C-S-up>")     'buf-move-up)
-   ;		   (global-set-key (kbd "<C-S-down>")   'buf-move-down)
-   ;		   (global-set-key (kbd "<C-S-left>")   'buf-move-left)
-   ;		   (global-set-key (kbd "<C-S-right>")  'buf-move-right)))))
-
-   (:name magit				; git meet emacs, and a binding
-   	  :type elpa
-         :before (global-set-key (kbd "C-x g") magit-status)
-   	  :depends (dash emacs-async ghub git-commit with-editor let-alist magit-popup with-editor async))))
-
-(setq
- my:el-get-packages
- '(el-get				; el-get is self-hosting
-   use-package
-   switch-window			; takes over C-x o
-   graphql                              ; dependency of magit
-   treepy                               ; dependency of magit
-   with-editor                          ; dependency of magit
-  ; magit
-   elpy
-   auto-complete			; complete as you type with overlays
-   yasnippet 				; powerful snippet mode
-   ;zencoding-mode			; http://www.emacswiki.org/emacs/ZenCoding
-   org-mime                             ; not included in org+contrib?
-   tablist                              ; dependency for pdf-tools
-   ace-isearch
-   color-theme		                ; nice looking emacs
-   color-theme-tango))	                ; check out color-theme-solarized
-
-(setq my:el-get-packages
-      (append
-       my:el-get-packages
-       (loop for src in el-get-sources collect (el-get-source-name src))))
-
-;; install new packages and init already installed packages
-(el-get 'sync my:el-get-packages)
-
-
-
-#+END_SRC
-
-#+RESULTS:
-
 * Magit-status global key
 #+BEGIN_SRC emacs-lisp
-(require 'magit)
+(use-package magit)
 (global-set-key (kbd "C-x g") 'magit-status)
 #+END_SRC
 
@@ -123,18 +70,12 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
   Emacs on MacOS has an issue in setting the path it searches for
   executables correctly.  Here's an emacs module that purports to
   solve that problem.
-#+BEGIN_SRC emacs-lisp :tangle no
-(el-get-bundle elpa:exec-path-from-shell
-  (when (memq window-system '(mac ns x))
+#+BEGIN_SRC emacs-lisp :tangle yes
+(when (memq window-system '(mac ns))
+  (use-package exec-path-from-shell
+    :ensure t
+    :config
     (exec-path-from-shell-initialize)))
-#+END_SRC
-
-#+RESULTS:
-
-* Install org-contrib
-  Note that this should come /after/ setup of [[*ELPA Package Archives][ELPA Package Archives]]
-#+BEGIN_SRC emacs-lisp :tangle no
-(el-get-bundle elpa:org-plus-contrib)
 #+END_SRC
 
 #+RESULTS:
@@ -149,4 +90,27 @@ recipes, and then to install a series of packages (=buffer-move=, =magit=
 (setq org-drawers (quote ("PROPERTIES" "LOGBOOK" "SETUP")))
 #+end_src
 
+
+** Use org-tempo instead of easy templates
+   #+begin_src emacs-lisp
+   (require 'org-tempo)
+   (setq org-tempo-keywords-alist 
+          (quote (("L" . "latex")
+                 ("H" . "html")
+                 ("A" . "ascii"))))
+
+   (add-to-list 'org-structure-template-alist '("p" . "src python
+"))
+   (add-to-list 'org-structure-template-alist '("i" . "src ipython
+"))
+   #+end_src
+
+   #+RESULTS:
+   : ((i . src ipython
+   : ) (p . src python
+   : ) (a . export ascii) (c . center) (C . comment) (e . example) (E . export) (h . export html) (l . export latex) (q . quote) (s . src) (v . verse))
+
+
+
+   #+end_src
 

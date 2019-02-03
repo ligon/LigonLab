@@ -22,25 +22,47 @@ install them.
 Replace the Python mode that comes with Emacs by the Python mode
 supplied by the Python distribution itself.
 #+begin_src emacs-lisp :tangle yes
-(el-get-bundle! 'python-mode)
+(use-package python
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("python" . python-mode))
 (autoload 'python-mode "python-mode" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-(add-to-list 'interpreter-mode-alist '("python" . python-mode))
+;(add-to-list 'interpreter-mode-alist '("python" . python-mode))
 #+end_src
 
-** COMMENT Use elpy 
+** Use elpy 
    :PROPERTIES:
    :CUSTOM_ID: python
    :END:
 Replace the Python mode that comes with Emacs by the Python mode
 supplied by the Python distribution itself.
 #+begin_src emacs-lisp  :tangle yes
-(require 'elpy)
-(add-to-list 'auto-mode-alist '("\\.py\\'" . elpy-mode))
-(add-to-list 'interpreter-mode-alist '("python" . elpy-mode))
+(use-package elpy
+  :ensure t
+  ;;:defer 2
+  :config
+  (progn
+    ;; Use Flycheck instead of Flymake
+    (when (require 'flycheck nil t)
+      (remove-hook 'elpy-modules 'elpy-module-flymake)
+      (remove-hook 'elpy-modules 'elpy-module-yasnippet)
+      (remove-hook 'elpy-mode-hook 'elpy-module-highlight-indentation)
+      (add-hook 'elpy-mode-hook 'flycheck-mode))
+    (elpy-enable)
+    ;; jedi is great
+    (setq elpy-rpc-backend "jedi")))
+(elpy-enable)
+;(add-to-list 'auto-mode-alist '("\\.py\\'" . elpy-mode))
+;(add-to-list 'interpreter-mode-alist '("python" . elpy-mode))
 #+end_src
 
+#+results:
+: ((python . elpy-mode) (python . python-mode) (r . ess-r-mode) (Rscript . ess-r-mode) (ruby1.8 . ruby-mode) (ruby1.9 . ruby-mode) (jruby . ruby-mode) (rbx . ruby-mode) (ruby . ruby-mode) (python[0-9.]* . python-mode) (rhino . js-mode) (gjs . js-mode) (nodejs . js-mode) (node . js-mode) (gawk . awk-mode) (nawk . awk-mode) (mawk . awk-mode) (awk . awk-mode) (pike . pike-mode) (\(mini\)?perl5? . perl-mode) (wishx? . tcl-mode) (tcl\(sh\)? . tcl-mode) (expect . tcl-mode) (octave . octave-mode) (scm . scheme-mode) ([acjkwz]sh . sh-mode) (r?bash2? . sh-mode) (dash . sh-mode) (mksh . sh-mode) (\(dt\|pd\|w\)ksh . sh-mode) (es . sh-mode) (i?tcsh . sh-mode) (oash . sh-mode) (rc . sh-mode) (rpm . sh-mode) (sh5? . sh-mode) (tail . text-mode) (more . text-mode) (less . text-mode) (pg . text-mode) (make . makefile-gmake-mode) (guile . scheme-mode) (clisp . lisp-mode) (emacs . emacs-lisp-mode))
 
+** Install ob-ipython
+#+begin_src emacs-lisp
+(use-package ob-ipython)
+#+end_src
 ** Use Cython mode
    :PROPERTIES:
    :CUSTOM_ID: cython
@@ -50,4 +72,9 @@ supplied by the Python distribution itself.
     (add-to-list 'auto-mode-alist '("\\.pyx\\'" . cython-mode))
     (add-to-list 'auto-mode-alist '("\\.pxd\\'" . cython-mode))
     (add-to-list 'auto-mode-alist '("\\.pxi\\'" . cython-mode)))
+#+end_src
+** Fix indentation
+#+begin_src emacs-lisp
+(setq python-indent-guess-indent-offset-verbose nil)
+(setq python-indent-offset 4)
 #+end_src
