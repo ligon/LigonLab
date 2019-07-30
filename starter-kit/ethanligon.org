@@ -230,6 +230,8 @@ Following notes from http://orgmode.org/worg/org-tutorials/encrypting-files.html
 (require 'epa-file)
 (epa-file-enable)
 
+(setq epa-pinentry-mode 'loopback)
+(pinentry-start)
 ;; GPG key to use for encryption
 ;; Either the Key ID or set to nil to use symmetric encryption.
 #+end_src
@@ -259,11 +261,12 @@ I use the following setup for encryption:
 (setq org-tags-exclude-from-inheritance (quote ("crypt")))
 ; GPG key to use for encryption
 ;(setq org-crypt-key "887A7D17") ;<ethan@ligon.org>
-(setq org-crypt-key "850ADE858E000FBB236117D885E9291A720379F7")
+(setq org-crypt-key "DB876DAFD5CEB224E3B9F19C181C4B035BBCC53A") ; ligon@berkeley.edu
 #+end_src
 
 #+results:
-: 850ADE858E000FBB236117D885E9291A720379F7
+: DB876DAFD5CEB224E3B9F19C181C4B035BBCC53A
+
 
 =M-x org-decrypt-entry= will prompt for the passphrase associated with
 your encryption key and replace the encrypted data where the point is
@@ -1697,7 +1700,7 @@ Following code-block sets markers used by async export.
      (("AUTO" "inputenc" t)
       ;;("T1" "fontenc" t) ; Commented out to deal with https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=810617.  Restore after libcairo2 updated.
       ("" "lmodern" t)
-      ("" "fixltx2e" nil)
+      ;;("" "fixltx2e" nil) ; Not required for LaTeX releases post 2015.
       ("" "graphicx" t)
       ("" "longtable" nil)
       ("" "float" nil)
