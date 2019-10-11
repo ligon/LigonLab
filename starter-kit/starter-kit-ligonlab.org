@@ -68,8 +68,13 @@
   ;(setq magithub-clone-default-directory "~/github"))t
 #+END_SRC
 
-#+RESULTS:
-: magit-status
+Here's the setup for forge, an alternative to magithub.
+#+begin_src emacs-lisp
+(use-package forge
+  :after magit)
+#+end_src
+
+#+results:
 
 * Fix for problem with exec-path on MacOS
   Emacs on MacOS has an issue in setting the path it searches for
