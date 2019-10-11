@@ -225,7 +225,10 @@ See also secret codes presently in customize.el.
 * Set up for encryption
 ** Worg Tutorial
 [2012-12-21 Fri 18:29] 
-Following notes from http://orgmode.org/worg/org-tutorials/encrypting-files.html.
+Following notes from
+http://orgmode.org/worg/org-tutorials/encrypting-files.html.
+Note: On my pixelbook, it's important to use a graphical
+pinentry program (e.g., pinentry-gtk2 and *not* pinentry-curses).
 #+begin_src emacs-lisp :tangle yes
 (require 'epa-file)
 (epa-file-enable)
@@ -1810,11 +1813,11 @@ See https://emacs.stackexchange.com/questions/9492/is-it-possible-to-export-cont
     ((auto-mode . emacs)
      ("\\.mm\\'" . default)
      ("\\.x?html?\\'" . "google-chrome %s")
-     ("\\.pdf\\'" . "evince %s"))))
+     ("\\.pdf\\'" . "garcon-url-handler %s"))))
 #+END_SRC
 
 #+results:
-: ((auto-mode . emacs) (\.mm\' . default) (\.x?html?\' . google-chrome %s) (\.pdf\' . evince %s))
+: ((auto-mode . emacs) (\.mm\' . default) (\.x?html?\' . google-chrome %s) (\.pdf\' . garcon-url-handler %s))
 
 * Org-ref (from jkitchin)
 
@@ -1826,10 +1829,12 @@ You should set these variables. Here is an example of how mine are set in an ini
 ;; see org-ref for use of these variables
 (setq org-ref-default-bibliography (expand-file-name "~/bibtex/main.bib"))
 ;;org-ref-bibliography-notes "~/Dropbox/bibliography/notes.org"      org-ref-pdf-directory "~/Dropbox/bibliography/bibtex-pdfs/")
+(setq org-ref-bibliography-notes (expand-file-name "~/Papers/notes.org"))
+(setq org-ref-pdf-directory (expand-file-name "~/Papers/bibtex-pdfs/"))
 #+END_SRC
 
 #+results:
-| ~/bibtex/main.bib |
+: /home/ethanligon/Papers/bibtex-pdfs/
 
 You may want to set some convenient keys for working in your bibtex file. These commands operate on the citation key at point.
 
