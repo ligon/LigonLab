@@ -10,4 +10,4 @@ Override settings (that use chrome directly) in =ethanligon.org=.
 #+END_SRC
 
 #+results:
-: ((auto-mode . emacs) (\.mm\' . default) (\.x?html?\' . google-chrome %s) (\.pdf\' . garcon-url-handler %s))
+: ((auto-mode . emacs) (\.mm\' . default) (\.x?html?\' . garcon-url-handler %s) (\.pdf\' . garcon-url-handler %s))

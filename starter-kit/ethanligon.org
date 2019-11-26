@@ -1807,7 +1807,8 @@ See https://emacs.stackexchange.com/questions/9492/is-it-possible-to-export-cont
 #+END_SRC
 
 * Set org-file apps
-#+BEGIN_SRC emacs-lisp
+Set this instead in machine-specific file
+#+BEGIN_SRC emacs-lisp :tangle no
 (setq org-file-apps
     (quote
     ((auto-mode . emacs)
@@ -1819,6 +1820,8 @@ See https://emacs.stackexchange.com/questions/9492/is-it-possible-to-export-cont
 #+results:
 : ((auto-mode . emacs) (\.mm\' . default) (\.x?html?\' . google-chrome %s) (\.pdf\' . garcon-url-handler %s))
 
+
+
 * Org-ref (from jkitchin)
 
 You should set these variables. Here is an example of how mine are set in an init.el file.
@@ -1828,7 +1831,7 @@ You should set these variables. Here is an example of how mine are set in an ini
 
 ;; see org-ref for use of these variables
 (setq org-ref-default-bibliography (expand-file-name "~/bibtex/main.bib"))
-;;org-ref-bibliography-notes "~/Dropbox/bibliography/notes.org"      org-ref-pdf-directory "~/Dropbox/bibliography/bibtex-pdfs/")
+
 (setq org-ref-bibliography-notes (expand-file-name "~/Papers/notes.org"))
 (setq org-ref-pdf-directory (expand-file-name "~/Papers/bibtex-pdfs/"))
 #+END_SRC
