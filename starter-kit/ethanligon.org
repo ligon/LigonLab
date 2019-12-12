@@ -349,7 +349,7 @@ I disable the default org crypt auto-save setting as follows:
 * Material borrowed from bernt_hansen
 ** Set up babel
 #+begin_src emacs-lisp :tangle yes
-  (setq org-ditaa-jar-path "~/.emacs.d/src/org-mode/contrib/scripts/ditaa.jar")
+  (setq org-ditaa-jar-path "~/.emacs.d/misc/ditaa.jar")
 
   (add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
 
@@ -383,6 +383,8 @@ I disable the default org crypt auto-save setting as follows:
   (setq org-confirm-babel-evaluate nil)
 
 #+end_src
+
+#+results:
 
 ** Change way in which src blocks are indented
 #+begin_src emacs-lisp :tangle yes
@@ -1722,8 +1724,6 @@ Following code-block sets markers used by async export.
       ("" "booktabs" nil))))
  #+END_SRC
 
- #+results:
- | (AUTO inputenc t) | ( lmodern t) | ( fixltx2e nil) | ( graphicx t) | ( longtable nil) | ( float nil) | ( wrapfig nil) | ( rotating nil) | (normalem ulem t) | ( textcomp t) | ( marvosym t) | ( wasysym t) | ( hyperref nil) | \tolerance=1000 | (authordate-trad,backend=biber,natbib biblatex-chicago nil) | \addbibresource{main.bib} | \addbibresource{ligon.bib} | \renewcommand{\refname}{} | ( booktabs nil) |
 
 ** Make links export in LaTeX to \refs.
  #+begin_src emacs-lisp
@@ -1844,9 +1844,9 @@ You may want to set some convenient keys for working in your bibtex file. These 
 If you use helm-bibtex as the citation key completion method you should set these variables too.
 
 #+BEGIN_SRC emacs-lisp
-(setq bibtex-completion-bibliography (expand-file-name "~/bibtex/main.bib"))
-;      bibtex-completion-library-path "~/Dropbox/bibliography/bibtex-pdfs"
-;      bibtex-completion-notes-path "~/Dropbox/bibliography/helm-bibtex-notes")
+(setq bibtex-completion-bibliography '("~/bibtex/main.bib" "~/bibtex/ligon.bib")
+      bibtex-completion-library-path (expand-file-name "~/Papers/bibtex-pdfs")
+      bibtex-completion-notes-path (expand-file-name "~/Papers/notes.org"))
 
 ;; open pdf with system pdf viewer (works on mac)
 (setq bibtex-completion-pdf-open-function
@@ -1858,7 +1858,7 @@ If you use helm-bibtex as the citation key completion method you should set thes
 #+END_SRC
 
 #+results:
-| lambda | (fpath) | (start-process open *open* open fpath) |
+: /home/ethanligon/Papers/notes.org
 
 There are alternative citation key completion methods.
 - org-ref-helm-cite :: An alternative to helm-bibtex
