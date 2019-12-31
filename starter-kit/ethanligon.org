@@ -128,7 +128,7 @@ More complicated?
 #+END_SRC
 * Dropbox
 See also secret codes presently in customize.el.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle nil
 (use-package dropbox) 
 #+end_src
 
