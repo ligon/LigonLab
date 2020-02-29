@@ -271,6 +271,7 @@ I use the following setup for encryption:
 : DB876DAFD5CEB224E3B9F19C181C4B035BBCC53A
 
 
+
 =M-x org-decrypt-entry= will prompt for the passphrase associated with
 your encryption key and replace the encrypted data where the point is
 with the plaintext details for your encrypted entry.  As soon as you
@@ -1624,11 +1625,6 @@ This code just sets up paths to find scimax bits
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/scimax/ox-ipynb"))
 #+END_SRC
 
-#+RESULTS:
-| /home/ethanligon/.emacs.d/scimax/ox-ipynb | /home/ethanligon/.emacs.d/elpa/org-ref-20190118.1502/citeproc/csl | /home/ethanligon/.emacs.d/elpa/org-ref-20190118.1502/citeproc | /home/ethanligon/.emacs.d/scimax | /home/ethanligon/Projects/LigonLab/starter-kit/elpa/ess-20190201.341/obsolete/ | /home/ethanligon/Projects/LigonLab/starter-kit/elpa/ess-20190201.341/ | /home/ethanligon/.emacs.d/src/org-mode/contrib/lisp | /home/ethanligon/.emacs.d/site-lisp/parsebib | /home/ethanligon/.emacs.d/site-lisp/ebib | /home/ethanligon/.emacs.d/site-lisp/auctex/ | /home/ethanligon/.emacs.d/site-lisp | /home/ethanligon/.emacs.d/src | ~/.emacs.d/src | /home/ethanligon/.emacs.d/elpa/ace-isearch-20170506.712 | /home/ethanligon/.emacs.d/elpa/auctex-12.1.1/ | /home/ethanligon/.emacs.d/elpa/auctex-12.1.1 | /home/ethanligon/.emacs.d/elpa/auto-compile-20181230.2216 | /home/ethanligon/.emacs.d/elpa/dropbox-20181208.2248 | /home/ethanligon/.emacs.d/elpa/elpy-20190130.2109 | /home/ethanligon/.emacs.d/elpa/company-20190116.1133 | /home/ethanligon/.emacs.d/elpa/ess-20190201.341 | /home/ethanligon/.emacs.d/elpa/find-file-in-project-20181217.246 | /home/ethanligon/.emacs.d/elpa/git-annex-20180427.1556 | /home/ethanligon/.emacs.d/elpa/highlight-indentation-20181204.839 | /home/ethanligon/.emacs.d/elpa/julia-mode-20190111.2044 | /home/ethanligon/.emacs.d/elpa/lispy-20190129.1054 | /home/ethanligon/.emacs.d/elpa/iedit-20181114.950 | /home/ethanligon/.emacs.d/elpa/ace-window-20190201.1840 | /home/ethanligon/.emacs.d/elpa/avy-20190126.2029 | /home/ethanligon/.emacs.d/elpa/magit-20190202.1535 | /home/ethanligon/.emacs.d/elpa/git-commit-20190102.107 | /home/ethanligon/.emacs.d/elpa/magit-popup-20181204.2031 | /home/ethanligon/.emacs.d/elpa/oauth-20130128.151 | /home/ethanligon/.emacs.d/elpa/ob-ipython-20180224.953 | /home/ethanligon/.emacs.d/elpa/dash-functional-20180107.1618 | /home/ethanligon/.emacs.d/elpa/org-mime-20181023.2314 | /home/ethanligon/.emacs.d/elpa/org-plus-contrib-20190128 | /home/ethanligon/.emacs.d/elpa/org-ref-20190118.1502 | /home/ethanligon/.emacs.d/elpa/key-chord-20160227.1238 | /home/ethanligon/.emacs.d/elpa/hydra-20181128.1716 | /home/ethanligon/.emacs.d/elpa/helm-bibtex-20190113.1845 | /home/ethanligon/.emacs.d/elpa/biblio-20161014.2304 | /home/ethanligon/.emacs.d/elpa/biblio-core-20160901.1815 | /home/ethanligon/.emacs.d/elpa/f-20190109.906 | /home/ethanligon/.emacs.d/elpa/helm-20190201.2051 | /home/ethanligon/.emacs.d/elpa/helm-core-20190122.549 | /home/ethanligon/.emacs.d/elpa/htmlize-20180923.1829 | /home/ethanligon/.emacs.d/elpa/dash-20190128.1920 | /home/ethanligon/.emacs.d/elpa/packed-20180318.1729 | /home/ethanligon/.emacs.d/elpa/parsebib-20181219.928 | /home/ethanligon/.emacs.d/elpa/pdf-tools-20190129.1822 | /home/ethanligon/.emacs.d/elpa/popup-20160709.1429 | /home/ethanligon/.emacs.d/elpa/python-mode-20181223.1933 | /home/ethanligon/.emacs.d/elpa/pyvenv-20181228.1722 | /home/ethanligon/.emacs.d/elpa/s-20180406.808 | /home/ethanligon/.emacs.d/elpa/swiper-20190126.2035 | /home/ethanligon/.emacs.d/elpa/ivy-20190130.1326 | /home/ethanligon/.emacs.d/elpa/tablist-20190129.1813 | /home/ethanligon/.emacs.d/elpa/use-package-20181119.2350 | /home/ethanligon/.emacs.d/elpa/bind-key-20180513.430 | /home/ethanligon/.emacs.d/elpa/with-editor-20181113.1845 | /home/ethanligon/.emacs.d/elpa/async-20181224.454 | /home/ethanligon/.emacs.d/elpa/yasnippet-20181015.1212 | /home/ethanligon/.emacs.d/elpa/zoutline-20180314.1759 | /etc/emacs25 | /etc/emacs | /usr/local/share/emacs/25.1/site-lisp | /usr/local/share/emacs/site-lisp | /usr/share/emacs25/site-lisp/dictionaries-common | /usr/share/emacs/site-lisp/autoconf | /usr/share/emacs/25.1/site-lisp | /usr/share/emacs/25.1/site-lisp/dictionaries-common | /usr/share/emacs/site-lisp | /usr/share/emacs/25.1/lisp | /usr/share/emacs/25.1/lisp/vc | /usr/share/emacs/25.1/lisp/url | /usr/share/emacs/25.1/lisp/textmodes | /usr/share/emacs/25.1/lisp/progmodes | /usr/share/emacs/25.1/lisp/play | /usr/share/emacs/25.1/lisp/org | /usr/share/emacs/25.1/lisp/nxml | /usr/share/emacs/25.1/lisp/net | /usr/share/emacs/25.1/lisp/mh-e | /usr/share/emacs/25.1/lisp/mail | /usr/share/emacs/25.1/lisp/leim | /usr/share/emacs/25.1/lisp/language | /usr/share/emacs/25.1/lisp/international | /usr/share/emacs/25.1/lisp/gnus | /usr/share/emacs/25.1/lisp/eshell | /usr/share/emacs/25.1/lisp/erc | /usr/share/emacs/25.1/lisp/emulation | /usr/share/emacs/25.1/lisp/emacs-lisp | /usr/share/emacs/25.1/lisp/cedet | /usr/share/emacs/25.1/lisp/calendar | /usr/share/emacs/25.1/lisp/calc | /usr/share/emacs/25.1/lisp/obsolete |
-
-
-
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package lispy)
 (require 'lispy)
@@ -1647,6 +1643,7 @@ Following code-block sets markers used by async export.
 #+BEGIN_SRC emacs-lisp :tangle yes
 ;; * START_ASYNC_INIT
 #+END_SRC
+
 ** New exporter for latex, etc.:
 #+begin_src emacs-lisp 
 (require 'ox-beamer)
