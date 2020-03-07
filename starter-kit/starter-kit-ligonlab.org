@@ -15,39 +15,6 @@
   (starter-kit-load "org")
   #+end_src
 
-* Source block execution
-   #+begin_src emacs-lisp :tangle yes                                  
-   (org-babel-do-load-languages                                        
-    (quote org-babel-load-languages)                                   
-    (quote ((emacs-lisp . t)                                           
-            (python . t)                                               
-            (shell . t) ; If an error, trying commenting this line...  
-            ;(sh . t)   ; ...and uncommenting this one.                
-            (org . t)                                                  
-            (dot . t)                                                
-            (ditaa . nil)                                              
-            (R . nil)                                                  
-            (ipython . nil)                                            
-            (octave . nil)                                             
-            (gnuplot . nil)                                            
-            (ledger . nil)                                             
-            (asymptote . nil)                                          
-            (latex . nil))))                                           
-   #+end_src                                                           
-
-   #+RESULTS:
-
-   You'll probably want to execute the following, but consider that
-   this may create a security issue.
-   #+begin_src emacs-lisp :tangle yes
-   ; Do not prompt to confirm evaluation
-   ; This may be dangerous - make sure you understand the consequences
-   ; of setting this -- see the docstring for details
-   (setq org-confirm-babel-evaluate nil)
-   #+end_src
-
-   #+RESULTS:
-
 * ELPA Package Archives
  #+BEGIN_SRC emacs-lisp :tangle yes :results silent
  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)

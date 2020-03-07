@@ -17,7 +17,7 @@
   (customize-set-variable 'package-archives
                           '(;;("gnu"       . "https://elpa.gnu.org/packages/")
                             ;;("marmalade" . "https://marmalade-repo.org/packages/")
-                            ;;("melpa"     . "https://melpa.org/packages/")
+                            ("melpa"     . "https://melpa.org/packages/")
                             ("melpa-stable" . "https://stable.melpa.org/packages/")
 			    ("org"	 . "http://orgmode.org/elpa/")))
 

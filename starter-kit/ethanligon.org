@@ -234,7 +234,7 @@ pinentry program (e.g., pinentry-gtk2 and *not* pinentry-curses).
 (epa-file-enable)
 
 (setq epa-pinentry-mode 'loopback)
-(pinentry-start)
+;(pinentry-start)
 ;; GPG key to use for encryption
 ;; Either the Key ID or set to nil to use symmetric encryption.
 #+end_src
@@ -348,52 +348,6 @@ I disable the default org crypt auto-save setting as follows:
 : t
 
 * Material borrowed from bernt_hansen
-** Set up babel
-#+begin_src emacs-lisp :tangle yes
-  (setq org-ditaa-jar-path "~/.emacs.d/misc/ditaa.jar")
-
-  (add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
-
-  ; Make babel results blocks lowercase
-  (setq org-babel-results-keyword "results")
-
-  (defun bh/display-inline-images ()
-    (condition-case nil
-        (org-display-inline-images)
-      (error nil)))
-
-  (org-babel-do-load-languages
-   (quote org-babel-load-languages)
-   (quote ((emacs-lisp . t)
-           (dot . nil)
-           (ditaa . t)
-           (R . t)
-           (python . t)
-           (ipython . t)
-           (octave . t)
-           (gnuplot . t)
-           (shell . t)
-           (ledger . t)
-           (org . t)
-           (asymptote . t)
-           (latex . t))))
-
-  ; Do not prompt to confirm evaluation
-  ; This may be dangerous - make sure you understand the consequences
-  ; of setting this -- see the docstring for details
-  (setq org-confirm-babel-evaluate nil)
-
-#+end_src
-
-#+results:
-
-** Change way in which src blocks are indented
-#+begin_src emacs-lisp :tangle yes
-(setq org-src-preserve-indentation nil)
-(setq org-src-tab-acts-natively t)
-#+end_src
-
-#+results:
 
 ** COMMENT Make org-structure stuff lowercase
 #+begin_src emacs-lisp :tangle yes
@@ -1631,12 +1585,25 @@ This code just sets up paths to find scimax bits
 (use-package org-ref)
 (require 's)
 (require 'scimax-org)
-;(require 'scimax)
+(require 'scimax)
 ;(require 'ox-ipynb)
 #+END_SRC
 
 #+results:
 : ox-ipynb
+
+** Experimental
+   #+begin_src emacs-lisp :results silent :tangle yes
+   (setq org-babel-ipython-debug t)
+   #+end_src
+
+
+   #+begin_src emacs-lisp :results silent :tangle yes
+   (setq org-babel-async-ipython t)
+   #+end_src
+
+
+
 
 * LaTeX Org-Export Setup
 Following code-block sets markers used by async export.
@@ -1873,6 +1840,53 @@ Finally, add this to your init.el files.
 
 Go forth and citate.
 
+* Source Blocks
+** Set up babel
+#+begin_src emacs-lisp :tangle yes
+  (setq org-ditaa-jar-path "~/.emacs.d/misc/ditaa.jar")
+
+  (add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
+
+  ; Make babel results blocks lowercase
+  (setq org-babel-results-keyword "results")
+
+  (defun bh/display-inline-images ()
+    (condition-case nil
+        (org-display-inline-images)
+      (error nil)))
+
+   (org-babel-do-load-languages                                        
+    (quote org-babel-load-languages)                                   
+    (quote ((emacs-lisp . t)                                           
+            (dot . t)                                                
+            (python . t)                                               
+            (shell . t) ; If an error, trying commenting this line...  
+            ;(sh . t)   ; ...and uncommenting this one.                
+            (org . t)                                                  
+            (ditaa . t)                                              
+            (R . t)                                                  
+            (ipython . t)                                            
+            (octave . nil)                                             
+            (gnuplot . nil)                                            
+            (ledger . nil)                                             
+            (asymptote . nil)                                          
+            (latex . nil))))                                           
+
+  ; Do not prompt to confirm evaluation
+  ; This may be dangerous - make sure you understand the consequences
+  ; of setting this -- see the docstring for details
+  (setq org-confirm-babel-evaluate nil)
+
+#+end_src
+
+
+** Change way in which src blocks are indented
+#+begin_src emacs-lisp :tangle yes
+(setq org-src-preserve-indentation t)
+(setq org-src-tab-acts-natively t)
+#+end_src
+
+#+results:
 
 * Install elpy
 https://github.com/jorgenschaefer/elpy
