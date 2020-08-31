@@ -1585,7 +1585,7 @@ This code just sets up paths to find scimax bits
 (use-package org-ref)
 (require 's)
 (require 'scimax-org)
-(require 'scimax)
+;(require 'scimax)
 ;(require 'ox-ipynb)
 #+END_SRC
 
@@ -1633,7 +1633,7 @@ Following code-block sets markers used by async export.
  #+BEGIN_SRC emacs-lisp :tangle yes
  (setq org-latex-classes
     (quote
-     (("beamer" "\\documentclass[presentation]{beamer}
+     (("beamer" "\\documentclass[presentation,t]{beamer}
        [DEFAULT-PACKAGES]
        [PACKAGES]
        [EXTRA]"

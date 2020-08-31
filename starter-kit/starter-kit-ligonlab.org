@@ -49,7 +49,7 @@ Here's the setup for forge, an alternative to magithub.
   executables correctly.  Here's an emacs module that purports to
   solve that problem.
 #+BEGIN_SRC emacs-lisp :tangle yes
-(when (memq window-system '(mac ns))
+(when (memq window-system '(mac ns x))
   (use-package exec-path-from-shell
     :ensure t
     :config
