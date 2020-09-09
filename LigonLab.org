@@ -73,7 +73,6 @@ How to fork a file from LigonLab to your personal github fork:
    6. Merge the pull request.
    7. On your terminal, check git status, check git diff, git pull
 
-
 ** Emacs
 *** Installation
   This document is written in =org-mode= format, a plaintext markup
@@ -92,7 +91,7 @@ How to fork a file from LigonLab to your personal github fork:
                Note that =macOS= also comes with a version of =emacs=
                installed that can (only?) be run in a terminal.  This
                latter is probably not what you want.
-*** Setup	       
+*** Setup
     Here we'll consider how to configure the extraordinarily
     configurable =emacs=.  By default =emacs= will look for
     configuration information in a directory called =.emacs.d=,
@@ -100,6 +99,7 @@ How to fork a file from LigonLab to your personal github fork:
     creates this directory for you.
     #+begin_src sh :exports code
     ln -s ./starter-kit/ $HOME/.emacs.d
+    touch ./starter-kit/custom.el
     echo "***Now exit emacs and restart***"
     #+end_src
 
