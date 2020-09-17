@@ -24,12 +24,6 @@
  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
  #+END_SRC
 
-* Visual Line Mode
-  Instead of auto-fill-column, mimic this visually without actually
-  adding line feeds.
-  #+begin_src emacs-lisp
-(global-visual-fill-column-mode)
-  #+end_src
 * Magit-status global key
 #+BEGIN_SRC emacs-lisp
 (use-package magit)
