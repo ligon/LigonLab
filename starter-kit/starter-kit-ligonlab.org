@@ -15,63 +15,46 @@
   (starter-kit-load "org")
   #+end_src
 
-* Source block execution
-   #+begin_src emacs-lisp :tangle yes                                  
-   (org-babel-do-load-languages                                        
-    (quote org-babel-load-languages)                                   
-    (quote ((emacs-lisp . t)                                           
-            (python . t)                                               
-            (shell . t) ; If an error, trying commenting this line...  
-            ;(sh . t)   ; ...and uncommenting this one.                
-            (org . t)                                                  
-            (dot . nil)                                                
-            (ditaa . nil)                                              
-            (R . nil)                                                  
-            (ipython . nil)                                            
-            (octave . nil)                                             
-            (gnuplot . nil)                                            
-            (ledger . nil)                                             
-            (asymptote . nil)                                          
-            (latex . nil))))                                           
-   #+end_src                                                           
-
-   #+RESULTS:
-
-   You'll probably want to execute the following, but consider that
-   this may create a security issue.
-   #+begin_src emacs-lisp :tangle yes
-   ; Do not prompt to confirm evaluation
-   ; This may be dangerous - make sure you understand the consequences
-   ; of setting this -- see the docstring for details
-   (setq org-confirm-babel-evaluate nil)
-   #+end_src
-
-   #+RESULTS:
-
 * ELPA Package Archives
- #+BEGIN_SRC emacs-lisp :tangle no
- ;(add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/") t)
- (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+ #+BEGIN_SRC emacs-lisp :tangle yes :results silent
+ (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+ (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
+ ;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t) ; Org-mode's
+ (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/") t)
  #+END_SRC
 
- #+RESULTS:
-
+* Visual Line Mode
+  Instead of auto-fill-column, mimic this visually without actually
+  adding line feeds.
+  #+begin_src emacs-lisp
+(global-visual-fill-column-mode)
+  #+end_src
 * Magit-status global key
 #+BEGIN_SRC emacs-lisp
 (use-package magit)
 (global-set-key (kbd "C-x g") 'magit-status)
+(use-package magithub
+  :after magit
+  :config
+  (magithub-feature-autoinject t))
+  ;(setq magithub-clone-default-directory "~/github"))t
 #+END_SRC
 
-#+RESULTS:
-: magit-status
+Here's the setup for forge, an alternative to magithub.
+#+begin_src emacs-lisp
+(use-package forge
+  :after magit)
+#+end_src
+
+#+results:
 
 * Fix for problem with exec-path on MacOS
   Emacs on MacOS has an issue in setting the path it searches for
   executables correctly.  Here's an emacs module that purports to
   solve that problem.
 #+BEGIN_SRC emacs-lisp :tangle yes
-(when (memq window-system '(mac ns))
+(when (memq window-system '(mac ns x))
   (use-package exec-path-from-shell
     :ensure t
     :config

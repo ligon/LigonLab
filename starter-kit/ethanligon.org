@@ -1,0 +1,1920 @@
+* Starter kit bits to load for personal use
+#+begin_src emacs-lisp
+  (starter-kit-load "python") ;; Breaks w/emacs24?; see http://python.6.n6.nabble.com/problem-with-byte-code-td2012559.html for possible work-around
+  (starter-kit-load "org")
+  ;;(starter-kit-load "haskell")
+ #+end_src
+
+ #+RESULTS:
+ : Loaded /home/ethanligon/.emacs.d/starter-kit-org.el
+
+* Load "edit-server" to allow one to call emacs from chromium
+Minimal, from chrome-extension://ljobjlafonikaiipfkggjbhkghgicgoh/fancy-settings/source/index.html
+#+begin_src emacs-lisp :tangle yes
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/site-lisp"))
+(when (require 'edit-server nil t)
+  (setq edit-server-new-frame nil)
+  (edit-server-start))
+#+end_src
+
+#+results:
+: An edit-server process is already running
+
+Add html stuff (maybe not working?)
+#+begin_src emacs-lisp :tangle no
+(autoload 'edit-server-maybe-dehtmlize-buffer "edit-server-htmlize" "edit-server-htmlize" t)
+(autoload 'edit-server-maybe-htmlize-buffer   "edit-server-htmlize" "edit-server-htmlize" t)
+(add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
+(add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
+#+end_src
+
+
+More complicated?
+#+begin_src emacs-lisp :tangle no
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/site-lisp"))
+(when (require 'edit-server nil t)
+  (setq edit-server-new-frame nil)
+  (edit-server-start))
+(autoload 'edit-server-maybe-dehtmlize-buffer "edit-server-htmlize" "edit-server-htmlize" t)
+(autoload 'edit-server-maybe-htmlize-buffer   "edit-server-htmlize" "edit-server-htmlize" t)
+(add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
+(add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
+#+end_src
+
+* Set default font
+#+BEGIN_SRC emacs-lisp :tangle no
+  (set-default-font "Inconsolata")
+  (set-face-attribute 'default nil :height 162)
+#+END_SRC
+
+#+results:
+
+* COMMENT Require "my_library.el"
+#+begin_src emacs-lisp
+(require 'my_library)
+#+end_src
+
+#+results:
+: my_library
+
+* Some global behavior
+** Auto-revert buffers to files that change on disk.
+#+begin_src emacs-lisp
+(global-auto-revert-mode 1)
+#+end_src
+
+#+RESULTS:
+: t
+
+** Use avy
+#+BEGIN_SRC emacs-lisp
+(use-package avy)
+(global-set-key (kbd "C-:") 'avy-goto-char)
+(global-set-key (kbd "C-'") 'avy-goto-char-2)
+#+END_SRC
+
+#+RESULTS:
+: avy-goto-char-2
+** Use swiper
+#+begin_src emacs-lisp
+  (use-package swiper)
+#+end_src
+** Use ace-isearch
+#+BEGIN_SRC emacs-lisp
+  (use-package ace-isearch)
+  (global-ace-isearch-mode +1)
+#+END_SRC
+** Web-browser is eww
+#+BEGIN_SRC emacs-lisp
+(setq browse-url-browser-function 'eww-browse-url) 
+;(setq browse-url-browser-function 'browse-url-chrome) ; google's browser
+#+END_SRC
+
+#+results:
+: eww-browse-url
+
+** Allow scrolling to very bottom of buffer w/C-v
+#+begin_src emacs-lisp :tangle yes
+(setq scroll-error-top-bottom t)
+#+end_src
+
+#+RESULTS:
+: t
+
+* Turn on "smart quotes" for org
+#+begin_src emacs-lisp
+(setq org-export-with-smart-quotes t)
+#+end_src
+
+#+RESULTS:
+: t
+
+* Octave
+#+begin_src emacs-lisp
+(setq auto-mode-alist
+      (cons '("\\.m$" . octave-mode) auto-mode-alist))
+
+(add-hook 'octave-mode-hook
+          (lambda ()
+            (abbrev-mode 1)
+            (auto-fill-mode 1)
+            (if (eq window-system 'x)
+                (font-lock-mode 1))))
+#+end_src
+
+* Org-mime (for html email from emacs)
+#+BEGIN_SRC emacs-lisp
+(use-package org-mime)
+#+END_SRC
+* Dropbox
+See also secret codes presently in customize.el.
+#+begin_src emacs-lisp :tangle nil
+(use-package dropbox) 
+#+end_src
+
+#+RESULTS:
+
+* COMMENT Set up for calfw (calendar which integrates w/org & gcal)
+  See http://comments.gmane.org/gmane.emacs.orgmode/43496
+#+begin_src emacs-lisp 
+(require 'calfw)
+(require 'calfw-org)
+(require 'calfw-ical)
+
+(defun my-open-calendar ()
+  (interactive)
+  (cfw:open-calendar-buffer
+   :view 'month
+   :contents-sources
+   (list 
+    (cfw:org-create-source "Seagreen4") ; color
+    (cfw:ical-create-source "ical" "https://www.google.com/calendar/ical/ethan.ligon%40gmail.com/private-21ac460c6013d08ccee412291cb85e1c/basic.ics" "#2952a3"))))
+    ;; title, URL, color
+#+end_src
+
+#+begin_src emacs-lisp
+(require 'calfw)
+(require 'calfw-ical)
+;;(cfw:open-ical-calendar "https://www.google.com/calendar/ical/ethan.ligon%40gmail.com/private-21ac460c6013d08ccee412291cb85e1c/basic.ics")
+#+end_src
+
+#+results:
+: #<buffer *cfw-calendar*>
+* John Weigley's git annex integration
+#+begin_src emacs-lisp
+(use-package git-annex)
+#+end_src
+
+* COMMENT Setup for mobile-org
+[2013-01-07 Mon 12:08]
+#+begin_src emacs-lisp :tangle yes
+(setq org-mobile-directory "/home/ligon/.Misc/Organization/MobileOrg")
+(setq org-mobile-inbox-for-pull "~/.Misc/Organization/from-mobile.org")
+#+end_src
+
+[[https://gist.github.com/3111823][Automatic asynchronous org-mobile-push in idle time. — Gist]]
+#+begin_src emacs-lisp :tangle no
+;; Show a notification when a push has been completed
+(require 'notifications)
+(defun notify-push (result)
+  (notifications-notify
+   :title "Push complete"
+   :body  (format "Org-mobile-push: %s" result)
+  )
+)
+
+;; Fork the work of pushing to mobile
+(require 'async) 
+(defun fork-org-push-mobile ()
+  (async-start
+   ;; What to do in the child process
+   `(lambda ()
+      ,(async-inject-variables "org-\\(mobile-\\|directory\\)")
+      (org-mobile-push))
+   
+   ; What to do when it finishes
+   (lambda (result)
+     (notify-push result))))
+
+;; Define a timer variable
+(defvar org-mobile-push-timer nil
+  "Timer that `org-mobile-push-timer' used to reschedule itself, or nil.")
+
+;; Push to mobile when the idle timer runs out
+(defun org-mobile-push-with-delay (secs)
+  (when org-mobile-push-timer
+  (cancel-timer org-mobile-push-timer))
+  (setq org-mobile-push-timer
+        (run-with-idle-timer
+         (* 1 secs) nil 'fork-org-push-mobile)))
+
+;; After saving files, start a 30 seconds idle timer after which we
+;; are going to push
+(add-hook 'after-save-hook 
+ (lambda () 
+   (when (eq major-mode 'org-mode)
+     (dolist (file (org-mobile-files-alist))
+       (if (string= (expand-file-name (car file)) (buffer-file-name))
+           (org-mobile-push-with-delay 30)))
+   )))
+
+;; At least run it once a day, but no need for a delay this time
+(run-at-time "00:05" 86400 '(lambda () (org-mobile-push-with-delay 1)))
+#+end_src
+
+* Set up for encryption
+** Worg Tutorial
+[2012-12-21 Fri 18:29] 
+Following notes from
+http://orgmode.org/worg/org-tutorials/encrypting-files.html.
+Note: On my pixelbook, it's important to use a graphical
+pinentry program (e.g., pinentry-gtk2 and *not* pinentry-curses).
+#+begin_src emacs-lisp :tangle yes
+(require 'epa-file)
+(epa-file-enable)
+
+(setq epa-pinentry-mode 'loopback)
+;(pinentry-start)
+;; GPG key to use for encryption
+;; Either the Key ID or set to nil to use symmetric encryption.
+#+end_src
+
+#+results:
+: ‘epa-file’ already enabled
+** Berndt Hansen's Crypt setup (adapted)
+:PROPERTIES:
+:CUSTOM_ID: HandlingEncryption
+:END:
+
+I used to keep my encrypted data like account passwords in a separate
+GPG encrypted file.  Now I keep them in my org-mode files with a
+special tag instead.  Encrypted data is kept in the org-mode file that
+it is associated with.
+
+=org-crypt= allows you to tag headings with a special tag =crypt= and
+org-mode can keep data in these headings encrypted when saved to disk.
+You decrypt the heading temporarily when you need access to the data
+and org-mode re-encrypts the heading as soon as you save the file.
+
+I use the following setup for encryption:
+#+begin_src emacs-lisp :tangle yes
+(require 'org-crypt)
+; Encrypt all entries before saving
+(org-crypt-use-before-save-magic)
+(setq org-tags-exclude-from-inheritance (quote ("crypt")))
+; GPG key to use for encryption
+;(setq org-crypt-key "887A7D17") ;<ethan@ligon.org>
+(setq org-crypt-key "DB876DAFD5CEB224E3B9F19C181C4B035BBCC53A") ; ligon@berkeley.edu
+#+end_src
+
+#+results:
+: DB876DAFD5CEB224E3B9F19C181C4B035BBCC53A
+
+
+
+=M-x org-decrypt-entry= will prompt for the passphrase associated with
+your encryption key and replace the encrypted data where the point is
+with the plaintext details for your encrypted entry.  As soon as you
+save the file the data is re-encrypted for your key.  Encrypting does
+not require prompting for the passphrase - that's only for looking at
+the plain text version of the data.
+
+I tend to have a single level 1 encrypted entry per file (like =*
+Passwords=).  I prevent the =crypt= tag from using inheritance so that
+I don't have encrypted data inside encrypted data.  I found =M-x
+org-decrypt-entries= prompting for the passphrase to decrypt data over
+and over again (once per entry to decrypt) too inconvenient.
+
+I leave my entries encrypted unless I have to look up data - I decrypt
+on demand and then save the file again to re-encrypt the data.  This
+keeps the data in plain text as short as possible.
+
+*** Auto Save Files
+:PROPERTIES:
+:CUSTOM_ID: AutoSaveFiles
+:END:
+[2011-09-26 Mon 04:57]
+
+Emacs temporarily saves your buffer in an autosave file while you are
+editing your org buffer and a sufficient number of changes have
+accumulated.  If you have decrypted subtrees in your buffer these will
+be written to disk in plain text which possibly leaks sensitive information.
+To combat this org-mode now asks if you want to disable the autosave 
+functionality in this buffer.
+
+Personally I really like the autosave feature.  99% of the time my encrypted
+entries are perfectly safe to write to the autosave file since they are
+still encrypted.  I tend to decrypt an entry, read the details for what
+I need to look up and then immediately save the file again with =C-x C-s=
+which re-encrypts the entry immediately.  This pretty much guarantees that 
+my autosave files never have decrypted data stored in them.
+
+I disable the default org crypt auto-save setting as follows:
+#+begin_src emacs-lisp :tangle yes
+(setq org-crypt-disable-auto-save nil)
+#+end_src
+
+#+RESULTS:
+
+* COMMENT Set up path for bbdb
+#+begin_src :tangle no
+(require 'bbdb-loaddefs "/home/ligon/.emacs.d/src/bbdb/lisp/bbdb-loaddefs.el")
+#+end_src
+* Other org stuff
+** Use this to use system viewer to view pdfs 
+#+begin_src emacs-lisp :tangle no
+;(add-to-list 'org-file-apps '("\\.x?pdf?\\'" browse-url file)) 
+(add-to-list 'org-file-apps '(lambda (file link) (org-pdfview-open file)
+#+end_src
+
+** Don't require verification to run code blocks
+#+begin_src emacs-lisp
+  (setq org-confirm-babel-evaluate nil)
+#+end_src
+
+#+RESULTS:
+
+** COMMENT Include material from Bernt Hansen
+#+begin_src emacs-lisp :tangle no
+  (setq org-babel-safe-header-args nil)
+  (starter-kit-load "bernt_hansen")
+#+end_src
+** Turn on inline images at startup
+#+begin_src emacs-lisp :tangle yes
+(setq org-startup-with-inline-images t)
+#+end_src
+
+#+results:
+: t
+
+* Material borrowed from bernt_hansen
+
+** COMMENT Make org-structure stuff lowercase
+#+begin_src emacs-lisp :tangle yes
+(mapc (lambda (arg) (setcdr arg (list (downcase (cadr arg)))))
+    org-structure-template-alist)
+#+end_src
+** Setup for weather predictions
+#+BEGIN_SRC emacs-lisp
+;;(require 'org-google-weather)
+(setq calendar-latitude 38.0)
+(setq calendar-longitude -122.6167)
+(setq calendar-location-name "Berkeley")
+#+END_SRC
+** Use inline tasks
+#+begin_src emacs-lisp
+(require 'org-inlinetask)
+#+end_src
+** Setup org-drawers
+#+begin_src emacs-lisp
+(setq org-drawers (quote ("PROPERTIES" "LOGBOOK" "SETUP")))
+#+end_src
+** Org-capture
+#+begin_src emacs-lisp :tangle yes
+(setq org-default-notes-file (concat "~/.Misc/Organization/refile_" system-name ".org"))
+
+;; I use C-c r to start capture mode when using SSH from my Android phone
+(global-set-key (kbd "C-c r") 'org-capture)
+
+;; Capture templates for: TODO tasks, Notes, appointments, phone calls, and org-protocol
+(setq org-capture-templates
+   (quote
+    (("t" "todo" entry (file org-default-notes-file)
+      "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+     ("T" "Tara" entry (file "~/Help/in.org")
+      "* TASKED %?\n" :clock-in t :clock-resume t)
+     ("b" "BibTeX" entry (file "~/bibtex/main.bib")
+      "")
+     ("r" "respond" entry (file org-default-notes-file)
+      "* TODO Respond to %:from on %:subject\n%U\n%a\n" :clock-in t :clock-resume t :immediate-finish t)
+     ("n" "note" entry (file org-default-notes-file)
+      "* %? :NOTE:\n%U\n" :clock-in t :clock-resume t)
+     ("j" "Journal" entry (file+olp+datetree "~/.Misc/Organization/diary.org")
+      "* %?\n%U\n" :clock-in t :clock-resume t)
+     ("L" "Protocol Link" entry (file org-default-notes-file)
+        "* [[%:link][%:description]] \nCaptured On: %U" :immediate-finish t :empty-lines 1)
+     ("p" "Protocol" entry (file org-default-notes-file)
+        "* %^{Title}\nSource: %u, %c\n #+BEGIN_QUOTE\n%i\n#+END_QUOTE\n\n\n%?")
+     ("w" "org-protocol" entry (file+headline "/tmp/foo.org")
+      "* Review %^{Title}\n\n Source %u, %c\n\n %i" :immediate-finish t :empty-lines 1)
+     ("p" "Phone call" entry (file org-default-notes-file)
+      "* PHONE %? :PHONE:\n%U" :clock-in t :clock-resume t)
+     ("h" "Habit" entry (file org-default-notes-file)
+      "* NEXT %?\n%U\n%a\nSCHEDULED: %t .+1d/3d\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
+#+end_src
+
+#+results:
+| t | todo | entry | (file org-default-notes-file) | * TODO %? |
+
+Capture mode now handles automatically clocking in and out of a
+capture task.  This all works out of the box now without special hooks.
+When I start a capture mode task the task is clocked in as specified
+by =:clock-in t= and when the task is filed with =C-c C-c= the clock 
+resumes on the original clocking task.
+
+The quick clocking in and out of capture mode tasks (often it takes
+less than a minute to capture some new task details) can leave
+empty clock drawers in my tasks which aren't really useful.  Since I
+remove clocking lines with 0:00 length I end up with a clock drawer
+like this:
+
+#+begin_src org :exports src
+,* TODO New Capture Task
+,  LOGBOOK:
+,  END:
+,  [2010-05-08 Sat 13:53]
+#+end_src
+Removes empty =LOGBOOK= drawers if they occur:
+#+begin_src emacs-lisp :tangle yes
+;; Remove empty LOGBOOK drawers on clock out
+(defun bh/remove-empty-drawer-on-clock-out ()
+  (interactive)
+  (save-excursion
+    (beginning-of-line 0)
+    (org-remove-empty-drawer-at "LOGBOOK" (point))))
+
+;;(add-hook 'org-clock-out-hook 'bh/remove-empty-drawer-on-clock-out 'append)
+#+end_src
+** Custom agenda views
+:PROPERTIES:
+:CUSTOM_ID: CustomAgendaViews
+:END:
+
+I now have one block agenda view that has everything on it.  I also
+keep separate single view agenda commands for use on my slower Eee
+PC - since it takes prohibitively long to generate my block agenda on
+that slow machine.  I'm striving to simplify my layout with everything
+at my fingertips in a single agenda on my workstation which is where I
+spend the bulk of my time.
+
+Most of my old custom agenda views were rendered obsolete when
+filtering functionality was added to the agenda in newer versions of
+=org-mode= and now with block agenda functionality I can combine
+everything into a single view.
+
+Custom agenda views are used for:
+- Single block agenda shows the following
+  - overview of today
+  - Finding tasks to be refiled
+  - Finding stuck projects
+  - Finding NEXT tasks to work on
+  - Show all related tasks
+  - Reviewing projects
+  - Finding tasks waiting on something
+  - Findings tasks to be archived
+- Finding notes
+- Viewing habits
+
+If I want just today's calendar view then =F12 a= is still faster than
+generating the block agenda - especially if I want to view a week or
+month's worth of information, or check my clocking data.  In that case
+the extra detail on the block agenda view is never really needed and I
+don't want to spend time waiting for it to be generated.
+*** Setup
+:PROPERTIES:
+:CUSTOM_ID: CustomAgendaViewSetup
+:END:
+
+#+begin_src emacs-lisp :tangle yes
+;; Dim blocked tasks
+(setq org-agenda-dim-blocked-tasks t)
+
+;; Compact the block agenda view
+(setq org-agenda-compact-blocks t)
+
+;; Custom agenda command definitions
+(setq org-agenda-custom-commands
+      (quote (("N" "Notes" tags "NOTE"
+               ((org-agenda-overriding-header "Notes")
+                (org-tags-match-list-sublevels t)))
+              ("h" "Habits" tags-todo "STYLE=\"habit\""
+               ((org-agenda-overriding-header "Habits")
+                (org-agenda-sorting-strategy
+                 '(todo-state-down effort-up category-keep))))
+              (" " "Agenda"
+               ((agenda "" nil)
+                (tags "REFILE"
+                      ((org-agenda-overriding-header "Tasks to Refile")
+                       (org-tags-match-list-sublevels nil)))
+                (tags-todo "-MOOT/!"
+                           ((org-agenda-overriding-header "Stuck Projects")
+                            (org-agenda-skip-function 'bh/skip-non-stuck-projects)))
+                (tags-todo "-WAITING-MOOT/!NEXT"
+                           ((org-agenda-overriding-header "Next Tasks")
+                            (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-todo-ignore-deadlines t)
+                            (org-agenda-todo-ignore-with-date t)
+                            (org-tags-match-list-sublevels t)
+                            (org-agenda-sorting-strategy
+                             '(todo-state-down effort-up category-keep))))
+                (tags-todo "-REFILE-MOOT/!-HOLD-WAITING"
+                           ((org-agenda-overriding-header "Tasks")
+                            (org-agenda-skip-function 'bh/skip-project-tasks-maybe)
+                            (org-agenda-todo-ignore-scheduled t)
+                            (org-agenda-todo-ignore-deadlines t)
+                            (org-agenda-todo-ignore-with-date t)
+                            (org-agenda-sorting-strategy
+                             '(category-keep))))
+                (tags-todo "-HOLD-MOOT/!"
+                           ((org-agenda-overriding-header "Projects")
+                            (org-agenda-skip-function 'bh/skip-non-projects)
+                            (org-agenda-sorting-strategy
+                             '(category-keep))))
+                (tags-todo "-MOOT+WAITING/!"
+                           ((org-agenda-overriding-header "Waiting and Postponed Tasks")
+                            (org-agenda-skip-function 'bh/skip-stuck-projects)
+                            (org-tags-match-list-sublevels nil)
+                            (org-agenda-todo-ignore-scheduled 'future)
+                            (org-agenda-todo-ignore-deadlines 'future)))
+                (tags "-REFILE/"
+                      ((org-agenda-overriding-header "Tasks to Archive")
+                       (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
+                       (org-tags-match-list-sublevels nil))))
+               nil)
+              ("r" "Tasks to Refile" tags "REFILE"
+               ((org-agenda-overriding-header "Tasks to Refile")
+                (org-tags-match-list-sublevels nil)))
+              ("#" "Stuck Projects" tags-todo "-MOOT/!"
+               ((org-agenda-overriding-header "Stuck Projects")
+                (org-agenda-skip-function 'bh/skip-non-stuck-projects)))
+              ("n" "Next Tasks" tags-todo "-WAITING-MOOT/!NEXT"
+               ((org-agenda-overriding-header "Next Tasks")
+                (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
+                (org-agenda-todo-ignore-scheduled t)
+                (org-agenda-todo-ignore-deadlines t)
+                (org-agenda-todo-ignore-with-date t)
+                (org-tags-match-list-sublevels t)
+                (org-agenda-sorting-strategy
+                 '(todo-state-down effort-up category-keep))))
+              ("R" "Tasks" tags-todo "-REFILE-MOOT/!-HOLD-WAITING"
+               ((org-agenda-overriding-header "Tasks")
+                (org-agenda-skip-function 'bh/skip-project-tasks-maybe)
+                (org-agenda-sorting-strategy
+                 '(category-keep))))
+              ("p" "Projects" tags-todo "-HOLD-MOOT/!"
+               ((org-agenda-overriding-header "Projects")
+                (org-agenda-skip-function 'bh/skip-non-projects)
+                (org-agenda-sorting-strategy
+                 '(category-keep))))
+              ("w" "Waiting Tasks" tags-todo "-MOOT+WAITING/!"
+               ((org-agenda-overriding-header "Waiting and Postponed tasks"))
+               (org-tags-match-list-sublevels nil))
+              ("A" "Tasks to Archive" tags "-REFILE/"
+               ((org-agenda-overriding-header "Tasks to Archive")
+                (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
+                (org-tags-match-list-sublevels nil))))))
+#+end_src
+
+#+results:
+| N | Notes            | tags                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | NOTE                        | ((org-agenda-overriding-header Notes) (org-tags-match-list-sublevels t))                                                                                                                                                                                                                                                                                     |                                     |
+| h | Habits           | tags-todo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | STYLE="habit"               | ((org-agenda-overriding-header Habits) (org-agenda-sorting-strategy (quote (todo-state-down effort-up category-keep))))                                                                                                                                                                                                                                      |                                     |
+|   | Agenda           | ((agenda  nil) (tags REFILE ((org-agenda-overriding-header Tasks to Refile) (org-tags-match-list-sublevels nil))) (tags-todo -MOOT/! ((org-agenda-overriding-header Stuck Projects) (org-agenda-skip-function (quote bh/skip-non-stuck-projects)))) (tags-todo -WAITING-MOOT/!NEXT ((org-agenda-overriding-header Next Tasks) (org-agenda-skip-function (quote bh/skip-projects-and-habits-and-single-tasks)) (org-agenda-todo-ignore-scheduled t) (org-agenda-todo-ignore-deadlines t) (org-agenda-todo-ignore-with-date t) (org-tags-match-list-sublevels t) (org-agenda-sorting-strategy (quote (todo-state-down effort-up category-keep))))) (tags-todo -REFILE-MOOT/!-HOLD-WAITING ((org-agenda-overriding-header Tasks) (org-agenda-skip-function (quote bh/skip-project-tasks-maybe)) (org-agenda-todo-ignore-scheduled t) (org-agenda-todo-ignore-deadlines t) (org-agenda-todo-ignore-with-date t) (org-agenda-sorting-strategy (quote (category-keep))))) (tags-todo -HOLD-MOOT/! ((org-agenda-overriding-header Projects) (org-agenda-skip-function (quote bh/skip-non-projects)) (org-agenda-sorting-strategy (quote (category-keep))))) (tags-todo -MOOT+WAITING/! ((org-agenda-overriding-header Waiting and Postponed Tasks) (org-agenda-skip-function (quote bh/skip-stuck-projects)) (org-tags-match-list-sublevels nil) (org-agenda-todo-ignore-scheduled (quote future)) (org-agenda-todo-ignore-deadlines (quote future)))) (tags -REFILE/ ((org-agenda-overriding-header Tasks to Archive) (org-agenda-skip-function (quote bh/skip-non-archivable-tasks)) (org-tags-match-list-sublevels nil)))) | nil                         |                                                                                                                                                                                                                                                                                                                                                              |                                     |
+| r | Tasks to Refile  | tags                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | REFILE                      | ((org-agenda-overriding-header Tasks to Refile) (org-tags-match-list-sublevels nil))                                                                                                                                                                                                                                                                         |                                     |
+| # | Stuck Projects   | tags-todo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | -MOOT/!                     | ((org-agenda-overriding-header Stuck Projects) (org-agenda-skip-function (quote bh/skip-non-stuck-projects)))                                                                                                                                                                                                                                                |                                     |
+| n | Next Tasks       | tags-todo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | -WAITING-MOOT/!NEXT         | ((org-agenda-overriding-header Next Tasks) (org-agenda-skip-function (quote bh/skip-projects-and-habits-and-single-tasks)) (org-agenda-todo-ignore-scheduled t) (org-agenda-todo-ignore-deadlines t) (org-agenda-todo-ignore-with-date t) (org-tags-match-list-sublevels t) (org-agenda-sorting-strategy (quote (todo-state-down effort-up category-keep)))) |                                     |
+| R | Tasks            | tags-todo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | -REFILE-MOOT/!-HOLD-WAITING | ((org-agenda-overriding-header Tasks) (org-agenda-skip-function (quote bh/skip-project-tasks-maybe)) (org-agenda-sorting-strategy (quote (category-keep))))                                                                                                                                                                                                  |                                     |
+| p | Projects         | tags-todo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | -HOLD-MOOT/!                | ((org-agenda-overriding-header Projects) (org-agenda-skip-function (quote bh/skip-non-projects)) (org-agenda-sorting-strategy (quote (category-keep))))                                                                                                                                                                                                      |                                     |
+| w | Waiting Tasks    | tags-todo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | -MOOT+WAITING/!             | ((org-agenda-overriding-header Waiting and Postponed tasks))                                                                                                                                                                                                                                                                                                 | (org-tags-match-list-sublevels nil) |
+| A | Tasks to Archive | tags                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | -REFILE/                    | ((org-agenda-overriding-header Tasks to Archive) (org-agenda-skip-function (quote bh/skip-non-archivable-tasks)) (org-tags-match-list-sublevels nil))                                                                                                                                                                                                        |                                     |
+
+My block agenda view looks like this when not narrowed to a project.
+This shows top-level projects and =NEXT= tasks but hides the project details since
+we are not focused on any particular project.
+
+[[file:block-agenda-nonproject.png]]
+
+After selecting a project (with =P= on any task in the agenda) the block agenda changes to show the project and
+any subprojects in the Projects section.  Tasks show project-related tasks that are hidden when not
+narrowed to a project.
+
+This makes it easy to focus on the task at hand.
+
+[[file:block-agenda-project.png]]
+
+I generally work top-down on the agenda.  Things with deadlines and
+scheduled dates (planned to work on today or earlier) show up in the
+agenda at the top.
+
+My day goes generally like this:
+
+- Punch in (this starts the clock on the default task)
+- Look at the agenda and make a mental note of anything important to deal with today
+- Read email and news
+  - create notes, and tasks for things that need responses with org-capture
+- Check refile tasks and respond to emails
+- Look at my agenda and work on important tasks for today
+  - Clock it in
+  - Work on it until it is =DONE= or it gets interrupted
+- work on tasks
+- Make journal entries (=C-M-r j=) for interruptions
+- Punch out for lunch and punch back in after lunch
+- work on more tasks
+- Refile tasks to empty the list
+  - Tag tasks to be refiled with =m= collecting all tasks for the same target
+  - Bulk refile the tasks to the target location with =B r=
+  - Repeat (or refile individually with =C-c C-w=) until all refile tasks are gone
+- Mark habits done today as DONE
+- Punch out at the end of the work day
+*** What do I work on next?
+:PROPERTIES:
+:CUSTOM_ID: WhatDoIWorkOnNext
+:END:
+
+Start with deadlines and tasks scheduled today or earlier from the
+daily agenda view.  Then move on to tasks in the =Next Tasks= list in
+the block agenda view.  I tend to schedule current projects to 'today'
+when I start work on them and they sit on my daily agenda reminding me
+that they need to be completed.  I normally only schedule one or two
+projects to the daily agenda and unschedule things that are no longer
+important and don't deserve my attention today.
+
+When I look for a new task to work on I generally hit =F12 SPC= to get
+the block agenda and follow this order:
+
+- Pick something off today's agenda
+  - deadline for today (do this first - it's not late yet)
+  - deadline in the past (it's already late)
+  - a scheduled task for today (it's supposed to be done today)
+  - a scheduled task that is still on the agenda
+  - deadline that is coming up soon
+- pick a NEXT task
+- If you run out of items to work on look for a NEXT task in the current context
+  pick a task from the Tasks list of the current project.
+**** Why keep it all on the =NEXT= list?
+:PROPERTIES:
+:CUSTOM_ID: CustomAgendaViewsNextList
+:END:
+
+I've moved to a more GTD way of doing things.  Now I just use a =NEXT=
+list.  Only projects get tasks with =NEXT= keywords since stuck projects
+initiate the need for marking or creating =NEXT= tasks.  A =NEXT= task
+is something that is available to work on /now/, it is the next
+logical step in some project.
+
+I used to have a special keyword =ONGOING= for things that I do a lot
+and want to clock but never really start/end.  I had a special agenda
+view for =ONGOING= tasks that I would pull up to easily find the thing
+I want to clock.
+
+Since then I've moved away from using the =ONGOING= todo keyword.
+Having an agenda view that shows =NEXT= tasks makes it easy to pick
+the thing to clock - and I don't have to remember if I need to look in
+the =ONGOING= list or the =NEXT= list when looking for the task to
+clock-in.  The =NEXT= list is basically 'what is current' - any task
+that moves a project forward.  I want to find the thing to work on as
+fast as I can and actually do work on it - not spend time hunting
+through my org files for the task that needs to be clocked-in.
+
+To drop a task off the =NEXT= list simply move it back to the =TODO=
+state.
+*** Reading email, newsgroups, and conversations on IRC
+:PROPERTIES:
+:CUSTOM_ID: ReadingMailNewsIRC
+:END:
+
+When reading email, newsgroups, and conversations on IRC I just let
+the default task (normally =** Organization=) clock the time I spend on
+these tasks.  To read email I go to Gnus and read everything in my
+inboxes.  If there are emails that require a response I use
+org-capture to create a new task with a heading of 'Respond to <user>'
+for each one.  This automatically links to the email in the task and
+makes it easy to find later.  Some emails are quick to respond to and
+some take research and a significant amount of time to complete.  I
+clock each one in it's own task just in case I need that clocked time
+later.
+
+Next, I go to my newly created tasks to be refiled from the block
+agenda with =F12 a= and clock in an email task and deal with it.
+Repeat this until all of the 'Respond to <user>' tasks are marked
+=DONE=.
+
+I read email and newgroups in Gnus so I don't separate clocked time
+for quickly looking at things.  If an article has a useful piece of
+information I want to remember I create a note for it with =C-M-r n=
+and enter the topic and file it.  This takes practically no time at
+all and I know the note is safely filed for later retrieval.  The time
+I spend in the capture buffer is clocked with that capture note.
+*** Filtering
+:PROPERTIES:
+:CUSTOM_ID: CustomAgendaViewFiltering
+:END:
+
+So many tasks, so little time.  I have hundreds of tasks at any given
+time (373 right now).  There is so much stuff to look at it can be
+daunting.  This is where agenda filtering saves the day.
+
+It's 11:53AM and I'm in work mode just before lunch.  I don't want to
+see tasks that are not work related right now.  I also don't want to
+work on a big project just before lunch... so I need to find small
+tasks that I can knock off the list.
+
+How do we do this?  Get a list of NEXT tasks from the block agenda and
+then narrow it down with filtering.  Tasks are ordered in the NEXT
+agenda view by estimated effort so the short tasks are first -- just
+start at the top and work your way down.  I can limit the displayed
+agenda tasks to those estimates of 10 minutes or less with =/ + 1= and
+I can pick something that fits the minutes I have left before I take
+off for lunch.
+**** Automatically removing context based tasks with / RET
+:PROPERTIES:
+:CUSTOM_ID: CustomAgendaViewFilteringContext
+:END:
+
+=/ RET= in the agenda is really useful.  This awesome feature was
+added to org-mode by John Wiegley.  It removes tasks automatically by
+filtering based on a user-provided function.
+
+At work I have projects I'm working on which are assigned by my
+manager.  Sometimes priorities changes and projects are delayed to
+sometime in the future.  This means I need to stop working on these
+immediately.  I put the project task on =HOLD= and work on something
+else.  The =/ RET= filter removes =HOLD= tasks and subtasks (because
+of tag inheritance).
+
+At home I have some tasks tagged with =farm= since these need to be
+performed when I am physically at our family farm.  Since I am there
+infrequently I have added =farm= to the list of auto-excluded tags on
+my system.  I can always explicitly filter to just =farm= tasks with
+=/ TAB farm RET= when I am physically there.
+
+I have the following setup to allow =/ RET= to filter tasks based on
+the description above.
+
+#+begin_src emacs-lisp :tangle yes
+(defun bh/org-auto-exclude-function (tag)
+  "Automatic task exclusion in the agenda with / RET"
+  (and (cond
+        ((string= tag "hold")
+         t)
+        ((string= tag "home")
+         t))
+       (concat "-" tag)))
+
+(setq org-agenda-auto-exclude-function 'bh/org-auto-exclude-function)
+#+end_src
+
+This lets me filter tasks with just =/ RET= on the agenda which removes tasks I'm not
+supposed to be working on now from the list of returned results.
+
+This helps to keep my agenda clutter-free.
+* Time Clocking
+:LOGBOOK:
+CLOCK: [2012-08-03 Fri 07:13]--[2012-08-03 Fri 07:35] =>  0:22
+:END:
+:PROPERTIES:
+:CUSTOM_ID: Clocking
+:END:
+
+Okay, I admit it.  I'm a clocking fanatic.
+
+I clock everything at work.  Org-mode makes this really easy.  I'd
+rather clock too much stuff than not enough so I find it's easier to
+get in the habit of clocking everything.
+
+This makes it possible to look back at the day and see where I'm
+spending too much time, or not enough time on specific projects.  This
+also helps a lot when you need to estimate how long something is going
+to take to do -- you can use your clocking data from similar tasks to
+help tune your estimates so they are more accurate.
+
+Without clocking data it's hard to tell how long something took to do
+after the fact.
+
+I now use the concept of =punching in= and =punching out= at the start
+and end of my work day.  I punch in when I arrive at work, punch out
+for lunch, punch in after lunch, and punch out at the end of the day.
+Every minute is clocked between punch-in and punch-out times.
+
+Punching in defines a default task to clock time on whenever the clock
+would normally stop.  I found that with the default org-mode setup I
+would lose clocked minutes during the day, a minute here, a minute
+there, and that all adds up.  This is especially true if you write
+notes when moving to a DONE state - in this case the clock normally
+stops before you have composed the note -- and good notes take a few
+minutes to write.
+
+My clocking setup basically works like this:
+
+- Punch in (start the clock)
+  - This clocks in a predefined task by =org-id= that is the default
+    task to clock in whenever the clock normally stops
+- Clock in tasks normally, and let moving to a DONE state clock out
+  - clocking out automatically clocks time on a parent task or moves
+    back to the predefined default task if no parent exists.
+- Continue clocking whatever tasks you work on
+- Punch out (stop the clock)
+
+I'm free to change the default task multiple times during the day but 
+with the clock moving up the project tree on clock out I no longer 
+need to do this.  I simply have a single task that gets clocked in
+when I punch-in.
+
+If I punch-in with a prefix on a task in =Project X= then that task
+automatically becomes the default task and all clocked time goes on
+that project until I either punch out or punch in some other task.
+
+My org files look like this:
+
+=todo.org=:
+#+begin_src org :exports src
+,#+FILETAGS: PERSONAL
+,...
+,* Tasks
+,** Organization
+,PROPERTIES:
+,CLOCK_MODELINE_TOTAL: today
+,ID:       eb155a82-92b2-4f25-a3c6-0304591af2f9
+,END:
+,...
+#+end_src
+
+If I am working on some task, then I simply clock in on the task.
+Clocking out moves the clock up to a parent task with a todo keyword
+(if any) which keeps the clock time in the same subtree.  If there
+is no parent task with a todo keyword then the clock moves back to
+the default clocking task until I punch out or clock in some other
+task.  When an interruption occurs I start a capture task which
+keeps clocked time on the interruption task until I close it with
+C-c C-c.
+
+This works really well for me.
+
+For example, consider the following org file:
+
+#+begin_src org :exports src
+,* TODO Project A
+,** NEXT TASK 1
+,** TODO TASK 2
+,** TODO TASK 3
+,* Tasks
+,** TODO Some miscellaneous task
+#+end_src
+
+I'll work on this file in the following sequence:
+
+1. I punch in with =F9-I= at the start of my day
+
+   That clocks in the =Organization= task by id in my =todo.org= file.
+
+2. =F12-SPC= to review my block agenda
+
+   Pick 'TODO Some miscellaneous task' to work on next and clock that in with =I=
+   The clock is now on 'TODO Some miscellaneous task'
+
+3. I complete that task and mark it done with =C-c C-t d=
+
+   This stops the clock and moves it back to the =Organization= task.
+
+4. Now I want to work on =Project A= so I clock in =Task 1=
+
+   I work on Task 1 and mark it =DONE=.  This clocks out =Task 1= and moves
+   the clock to =Project A=.  Now I work on =Task 2= and clock that in.
+
+The entire time I'm working on and clocking some subtask of =Project A=
+all of the clock time in the interval is applied somewhere to the =Project A=
+tree.  When I eventually mark =Project A= done then the clock will move
+back to the default organization task.
+** Clock Setup
+:PROPERTIES:
+:CUSTOM_ID: ClockSetup
+:END:
+
+To get started we need to punch in which clocks in the default
+task and keeps the clock running.  This is now simply a matter of
+punching in the clock with =F9 I=.  You can do this anywhere.
+Clocking out will now clock in the parent task (if there is one
+with a todo keyword) or clock in the default task if not parent
+exists.
+
+Keeping the clock running when moving a subtask to a =DONE= state
+means clocking continues to apply to the project task.  I can pick the
+next task from the parent and clock that in without losing a minute or
+two while I'm deciding what to work on next.
+
+I keep clock times, state changes, and other notes in the =:LOGBOOK:=
+drawer.
+
+I have the following org-mode settings for clocking:
+
+#+begin_src emacs-lisp :tangle no
+;;
+;; Resume clocking task when emacs is restarted
+(org-clock-persistence-insinuate)
+;;
+;; Show lot sof clocking history so it's easy to pick items off the C-F11 list
+(setq org-clock-history-length 36)
+;; Resume clocking task on clock-in if the clock is open
+(setq org-clock-in-resume t)
+;; Change tasks to NEXT when clocking in
+(setq org-clock-in-switch-to-state 'bh/clock-in-to-next)
+;; Separate drawers for clocking and logs
+;;(setq org-drawers (quote ("PROPERTIES" "LOGBOOK")))  ;; Set earlier
+;; Save clock data and state changes and notes in the LOGBOOK drawer
+(setq org-clock-into-drawer t)
+;; Sometimes I change tasks I'm clocking quickly - this removes clocked tasks with 0:00 duration
+(setq org-clock-out-remove-zero-time-clocks t)
+;; Clock out when moving task to a done state
+(setq org-clock-out-when-done t)
+;; Save the running clock and all clock history when exiting Emacs, load it on startup
+(setq org-clock-persist t)
+;; Do not prompt to resume an active clock
+(setq org-clock-persist-query-resume nil)
+;; Enable auto clock resolution for finding open clocks
+(setq org-clock-auto-clock-resolution (quote when-no-clock-is-running))
+;; Include current clocking task in clock reports
+(setq org-clock-report-include-clocking-task t)
+
+(setq bh/keep-clock-running nil)
+
+(defun bh/clock-in-to-next (kw)
+  "Switch a task from TODO to NEXT when clocking in.
+Skips capture tasks, projects, and subprojects.
+Switch projects and subprojects from NEXT back to TODO"
+  (when (not (and (boundp 'org-capture-mode) org-capture-mode))
+    (cond
+     ((and (member (org-get-todo-state) (list "TODO"))
+           (bh/is-task-p))
+      "NEXT")
+     ((and (member (org-get-todo-state) (list "NEXT"))
+           (bh/is-project-p))
+      "TODO"))))
+
+(defun bh/find-project-task ()
+  "Move point to the parent (project) task if any"
+  (save-restriction
+    (widen)
+    (let ((parent-task (save-excursion (org-back-to-heading 'invisible-ok) (point))))
+      (while (org-up-heading-safe)
+        (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
+          (setq parent-task (point))))
+      (goto-char parent-task)
+      parent-task)))
+
+(defun bh/punch-in (arg)
+  "Start continuous clocking and set the default task to the
+selected task.  If no task is selected set the Organization task
+as the default task."
+  (interactive "p")
+  (setq bh/keep-clock-running t)
+  (if (equal major-mode 'org-agenda-mode)
+      ;;
+      ;; We're in the agenda
+      ;;
+      (let* ((marker (org-get-at-bol 'org-hd-marker))
+             (tags (org-with-point-at marker (org-get-tags-at))))
+        (if (and (eq arg 4) tags)
+            (org-agenda-clock-in '(16))
+          (bh/clock-in-organization-task-as-default)))
+    ;;
+    ;; We are not in the agenda
+    ;;
+    (save-restriction
+      (widen)
+      ; Find the tags on the current task
+      (if (and (equal major-mode 'org-mode) (not (org-before-first-heading-p)) (eq arg 4))
+          (org-clock-in '(16))
+        (bh/clock-in-organization-task-as-default)))))
+
+(defun bh/punch-out ()
+  (interactive)
+  (setq bh/keep-clock-running nil)
+  (when (org-clock-is-active)
+    (org-clock-out))
+  (org-agenda-remove-restriction-lock))
+
+(defun bh/clock-in-default-task ()
+  (save-excursion
+    (org-with-point-at org-clock-default-task
+      (org-clock-in))))
+
+(defun bh/clock-in-parent-task ()
+  "Move point to the parent (project) task if any and clock in"
+  (let ((parent-task))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (while (and (not parent-task) (org-up-heading-safe))
+          (when (member (nth 2 (org-heading-components)) org-todo-keywords-1)
+            (setq parent-task (point))))
+        (if parent-task
+            (org-with-point-at parent-task
+              (org-clock-in))
+          (when bh/keep-clock-running
+            (bh/clock-in-default-task)))))))
+
+(defvar bh/organization-task-id "b81e2d80-123f-498c-94c4-dcaa8acb6721")
+
+(defun bh/clock-in-organization-task-as-default ()
+  (interactive)
+  (org-with-point-at (org-id-find bh/organization-task-id 'marker)
+    (org-clock-in '(16))))
+
+(defun bh/clock-out-maybe ()
+  (when (and bh/keep-clock-running
+             (not org-clock-clocking-in)
+             (marker-buffer org-clock-default-task)
+             (not org-clock-resolving-clocks-due-to-idleness))
+    (bh/clock-in-parent-task)))
+
+(add-hook 'org-clock-out-hook 'bh/clock-out-maybe 'append)
+#+end_src
+
+I used to clock in tasks by ID using the following function but with
+the new punch-in and punch-out I don't need these as much anymore.
+=f9-SPC= calls =bh/clock-in-last-task= which switches the clock back
+to the previously clocked task.
+
+#+begin_src emacs-lisp :tangle yes
+(require 'org-id)
+(defun bh/clock-in-task-by-id (id)
+  "Clock in a task by id"
+  (org-with-point-at (org-id-find id 'marker)
+    (org-clock-in nil)))
+
+(defun bh/clock-in-last-task (arg)
+  "Clock in the interrupted task if there is one
+Skip the default task and get the next one.
+A prefix arg forces clock in of the default task."
+  (interactive "p")
+  (let ((clock-in-to-task
+         (cond
+          ((eq arg 4) org-clock-default-task)
+          ((and (org-clock-is-active)
+                (equal org-clock-default-task (cadr org-clock-history)))
+           (caddr org-clock-history))
+          ((org-clock-is-active) (cadr org-clock-history))
+          ((equal org-clock-default-task (car org-clock-history)) (cadr org-clock-history))
+          (t (car org-clock-history)))))
+    (org-with-point-at clock-in-to-task
+      (org-clock-in nil))))
+#+end_src
+** Clocking in
+:PROPERTIES:
+:CUSTOM_ID: ClockingIn
+:END:
+
+When I start or continue working on a task I clock it in with any of the following:
+
+  - =C-c C-x C-i= 
+  - =I= in the agenda
+  - =I= speed key on the first character of the heading line
+  - =f9 I= while on the task in the agenda
+  - =f9 I= while in the task in an org file
+*** Setting a default clock task
+:PROPERTIES:
+:CUSTOM_ID: ClockingInDefaultTask
+:END:
+
+I have a default =** Organization= task in my todo.org file that
+I tend to put miscellaneous clock time on.  This is the task I
+clock in on when I punch in at the start of my work day with
+=F9-I=.  While reorganizing my org-files, reading email,
+clearing my inbox, and doing other planning work that isn't for
+a specific project I'll clock in this task.  Punching-in
+anywhere clocks in this Organization task as the default task.
+
+If I want to change the default clocking task I just visit the
+new task in any org buffer and clock it in with =C-u C-u C-c C-x
+C-i=.  Now this new task that collects miscellaneous clock
+minutes when the clock would normally stop.
+
+You can quickly clock in the default clocking task with =C-u C-c
+C-x C-i d=.  Another option is to repeatedly clock out so the
+clock moves up the project tree until you clock out the
+top-level task and the clock moves to the default task.
+*** Using the clock history to clock in old tasks
+:PROPERTIES:
+:CUSTOM_ID: ClockingInByClockHistory
+:END:
+
+You can use the clock history to restart clocks on old tasks you've
+clocked or to jump directly to a task you have clocked previously.  I
+use this mainly to clock in whatever got interrupted by something.
+
+Consider the following scenario:
+
+- You are working on and clocking =Task A= (Organization)
+- You get interrupted and switch to =Task B= (Document my use of org-mode)
+- You complete =Task B= (Document my use of org-mode)
+- Now you want to go back to =Task A= (Organization) again to continue
+
+This is easy to deal with.  
+
+1. Clock in =Task A=, work on it
+2. Go to =Task B= (or create a new task) and clock it in
+3. When you are finished with =Task B= hit =C-u C-c C-x C-i i=
+
+This displays a clock history selection window like the following and
+selects the interrupted =[i]= entry.
+
+*Clock history selection buffer for C-u C-c C-x C-i*
+#+begin_example
+Default Task
+[d] norang          Organization                          <-- Task B
+The task interrupted by starting the last one
+[i] norang          Organization                          <-- Task B
+Current Clocking Task
+[c] org             NEXT Document my use of org-mode      <-- Task A
+Recent Tasks
+[1] org             NEXT Document my use of org-mode      <-- Task A
+[2] norang          Organization                          <-- Task B
+...
+[Z] org             DONE Fix default section links        <-- 35 clock task entries ago
+#+end_example
+** Clock Everything - Create New Tasks
+:PROPERTIES:
+:CUSTOM_ID: ClockEverythingWithNewTasks
+:END:
+
+In order to clock everything you need a task for everything.  That's
+fine for planned projects but interruptions inevitably occur and you
+need some place to record whatever time you spend on that
+interruption.
+
+To deal with this we create a new capture task to record the thing we
+are about to do.  The workflow goes something like this:
+
+- You are clocking some task and an interruption occurs
+- Create a quick capture task journal entry =C-M-r j=
+- Type the heading
+- go do that thing (eat lunch, whatever)
+- file it =C-c C-c=, this restores the clock back to the previous clocking task
+- clock something else in or continue with the current clocking task
+
+This means you can ignore the details like where this task really
+belongs in your org file layout and just get on with completing the
+thing.  Refiling a bunch of tasks later in a group when it is
+convenient to refile the tasks saves time in the long run.
+
+If it's a one-shot uninteresting task (like a coffee break) I create
+a capture journal entry for it that goes to the diary.org date tree.
+If it's a task that actually needs to be tracked and marked done, and 
+applied to some project then I create a capture task instead which files it in 
+refile.org.
+** Finding tasks to clock in
+:PROPERTIES:
+:CUSTOM_ID: FindTasksToClockIn
+:END:
+
+To find a task to work on I use one of the following options
+(generally listed most frequently used first)
+
+- Use the clock history C-u C-c C-x C-i
+  Go back to something I was clocking that is not finished
+- Pick something off today's block agenda
+  =SCHEDULED= or =DEADLINE= items that need to be done soon
+- Pick something off the =NEXT= tasks agenda view
+  Work on some unfinished task to move to completion
+- Pick something off the other task list 
+- Use an agenda view with filtering to pick something to work on
+
+Punching in on the task you select will restrict the agenda view to that project
+so you can focus on just that thing for some period of time.
+** Editing clock entries
+:PROPERTIES:
+:CUSTOM_ID: EditingClockEntries
+:END:
+
+Sometimes it is necessary to edit clock entries so they reflect
+reality.  I find I do this for maybe 2-3 entries in a week.
+
+Occassionally I cannot clock in a task on time because I'm away from
+my computer.  In this case the previous clocked task is still running
+and counts time for both tasks which is wrong.
+
+I make a note of the time and then when I get back to my computer I
+clock in the right task and edit the start and end times to correct
+the clock history.
+
+To visit the clock line for an entry quickly use the agenda log mode.
+=F12 a l= shows all clock lines for today.  I use this to navigate to
+the appropriate clock lines quickly.  F11 goes to the current clocked
+task but the agenda log mode is better for finding and visiting older
+clock entries.
+
+Use =F12 a l= to open the agenda in log mode and show only logged
+clock times.  Move the cursor down to the clock line you need to edit
+and hit =TAB= and you're there.
+
+To edit a clock entry just put the cursor on the part of the date you
+want to edit (use the keyboard not the mouse - since the clicking on
+the timestamp with the mouse goes back to the agenda for that day) and
+hit the =S-<up arrow>= or =S-<down arrow>= keys to change the time.
+
+The following setting makes time editing use discrete minute intervals (no rounding)
+increments:
+#+begin_src emacs-lisp :tangle yes
+(setq org-time-stamp-rounding-minutes (quote (1 1)))
+#+end_src
+
+Editing the time with the shift arrow combination also updates the
+total for the clock line which is a nice convenience.
+
+I always check that I haven't created task overlaps when fixing time
+clock entries by viewing them with log mode on in the agenda.  There
+is a new view in the agenda for this -- just hit =v c= in the daily 
+agenda and clock gaps and overlaps are identified.
+
+I want my clock entries to be as accurate as possible.
+
+The following setting shows 1 minute clocking gaps.
+#+begin_src emacs-lisp :tangle yes
+(setq org-agenda-clock-consistency-checks
+      (quote (:max-duration "4:00"
+              :min-duration 0
+              :max-gap 0
+              :gap-ok-around ("4:00"))))
+#+end_src
+** Automatically clocking tasks
+:PROPERTIES:
+:CUSTOM_ID: AutomaticallyClockingTasks
+:END:
+
+I spend time on an open source project called BZFlag.  During work for releases
+I want to clock the time I spend testing the new BZFlag client.  I have a key
+binding in my window manager that runs a script which starts the clock on my
+testing task, runs the BZFlag client, and on exit resumes the clock on the 
+previous clocking task.
+
+The testing task has an ID property of
+=dcf55180-2a18-460e-8abb-a9f02f0893be= and the following elisp code
+starts the clock on this task.
+
+#+begin_src emacs-lisp :tangle no
+(defun bh/clock-in-bzflagt-task ()
+  (interactive)
+  (bh/clock-in-task-by-id "dcf55180-2a18-460e-8abb-a9f02f0893be"))
+#+end_src
+
+This is invoked by a bash shell script as follows:
+
+#+begin_src sh :results output
+#!/bin/sh
+emacsclient -e '(bh/clock-in-bzflagt-task)'
+~/git/bzflag/trunk/bzflag/src/bzflag/bzflag -directory ~/git/bzflag/trunk/bzflag/data $*
+emacsclient -e '(bh/resume-clock)'
+#+end_src
+
+The resume clock function just returns the clock to the previous clocking task
+
+#+begin_src emacs-lisp :tangle yes
+(defun bh/resume-clock ()
+  (interactive)
+  (if (marker-buffer org-clock-interrupted-task)
+      (org-with-point-at org-clock-interrupted-task
+        (org-clock-in))
+    (org-clock-out)))
+#+end_src
+
+If no task was clocking =bh/resume-clock= just stops the clock.
+* Org Agenda
+  Define agenda files:
+#+begin_src emacs-lisp :tangle yes :exports none
+(setq org-agenda-files "~/.emacs.d/agenda_files")
+#+end_src
+
+** Use C-c C-S-w to [[http://punchagan.muse-amuse.in/blog/refile-to-date-tree][Refile to date-tree]]
+[2012-08-24 Fri 13:15]
+#+begin_src emacs-lisp :exports silent :tangle no
+(defun my/org-refile-to-journal ()
+  "Refile an entry to journal file's date-tree"
+  (interactive)
+  (require 'org-datetree)
+  (let ((journal (expand-file-name "journal.org" org-directory))
+        post-date)
+    (setq post-date (or (org-entry-get (point) "TIMESTAMP_IA")
+                        (org-entry-get (point) "TIMESTAMP")))
+    (setq post-date (nthcdr 3 (parse-time-string post-date)))
+    (setq post-date (list (cadr post-date)
+                          (car post-date)
+                          (caddr post-date)))
+    (org-cut-subtree)
+    (with-current-buffer (or (find-buffer-visiting journal)
+                             (find-file-noselect journal))
+      (save-excursion
+        (org-datetree-file-entry-under (current-kill 0) post-date)
+        (bookmark-set "org-refile-last-stored")))
+    (message "Refiled to %s" journal)))
+
+(defun my/org-agenda-refile-to-journal ()
+  "Refile the item at point to journal."
+  (interactive)
+  (let* ((marker (or (org-get-at-bol 'org-hd-marker)
+                     (org-agenda-error)))
+         (buffer (marker-buffer marker))
+         (pos (marker-position marker)))
+    (with-current-buffer buffer
+      (save-excursion
+        (save-restriction
+          (widen)
+          (goto-char marker)
+          (org-remove-subtree-entries-from-agenda)
+          (my/org-refile-to-journal)))))
+  (org-agenda-redo))
+
+(org-defkey org-agenda-mode-map (kbd "C-c C-S-w") 'my/org-agenda-refile-to-journal)
+(org-defkey org-mode-map (kbd "C-c C-S-w") 'my/org-refile-to-journal)
+#+end_src
+
+* Weigley's AUCTeX
+#+begin_src emacs-lisp
+(use-package tex-site                   ; auctex
+  :load-path "site-lisp/auctex/"
+  :defines (latex-help-cmd-alist latex-help-file)
+  :mode ("\\.tex\\'" . TeX-latex-mode)
+  :init
+  (setq reftex-plug-into-AUCTeX t)
+  (setenv "PATH" (concat "/Library/TeX/texbin:"
+                         (getenv "PATH")))
+  (add-to-list 'exec-path "/Library/TeX/texbin")
+  :config
+  (defun latex-help-get-cmd-alist ()    ;corrected version:
+    "Scoop up the commands in the index of the latex info manual.
+   The values are saved in `latex-help-cmd-alist' for speed."
+    ;; mm, does it contain any cached entries
+    (if (not (assoc "\\begin" latex-help-cmd-alist))
+        (save-window-excursion
+          (setq latex-help-cmd-alist nil)
+          (Info-goto-node (concat latex-help-file "Command Index"))
+          (goto-char (point-max))
+          (while (re-search-backward "^\\* \\(.+\\): *\\(.+\\)\\." nil t)
+            (let ((key (buffer-substring (match-beginning 1) (match-end 1)))
+                  (value (buffer-substring (match-beginning 2)
+                                           (match-end 2))))
+              (add-to-list 'latex-help-cmd-alist (cons key value))))))
+    latex-help-cmd-alist)
+
+  (use-package ebib
+    :load-path "site-lisp/ebib"
+    :preface
+    (use-package parsebib :load-path "site-lisp/parsebib")))
+#+end_src
+
+#+results:
+: ((\.hva\' . latex-mode) (\.drv\' . latex-mode) (\.tex\' . TeX-latex-mode) (\.gpg\(~\|\.~[0-9]+~\)?\' nil epa-file) (\.m$ . octave-mode) (\.dz\' nil jka-compr) (\.xz\' nil jka-compr) (\.lzma\' nil jka-compr) (\.lz\' nil jka-compr) (\.g?z\' nil jka-compr) (\.bz2\' nil jka-compr) (\.Z\' nil jka-compr) (\*.org$ . org-mode) (/git-rebase-todo\' . git-rebase-mode) (\.at\' . autotest-mode) (\.gpg\(~\|\.~[0-9]+~\)?\' nil epa-file) (\.\(?:3fr\|a\(?:r[tw]\|vs\)\|bmp[23]?\|c\(?:als?\|myka?\|r[2w]\|u[rt]\)\|d\(?:c[mrx]\|ds\|jvu\|ng\|px\)\|exr\|f\(?:ax\|its\)\|gif\(?:87\)?\|hrz\|ic\(?:on\|[bo]\)\|j\(?:2c\|ng\|p\(?:eg\|[2cg]\)\)\|k\(?:25\|dc\)\|m\(?:iff\|ng\|rw\|s\(?:l\|vg\)\|tv\)\|nef\|o\(?:rf\|tb\)\|p\(?:bm\|c\(?:ds\|[dltx]\)\|db\|ef\|gm\|i\(?:ct\|x\)\|jpeg\|n\(?:g\(?:24\|32\|8\)\|[gm]\)\|pm\|sd\|tif\|wp\)\|r\(?:a[fs]\|gb[ao]?\|l[ae]\)\|s\(?:c[rt]\|fw\|gi\|r[2f]\|un\|vgz?\)\|t\(?:ga\|i\(?:ff\(?:64\)?\|le\|m\)\|tf\)\|uyvy\|v\(?:da\|i\(?:car\|d\|ff\)\|st\)\|w\(?:bmp\|pg\)\|x\(?:3f\|bm\|cf\|pm\|wd\|[cv]\)\|y\(?:cbcra?\|uv\)\)\' . image-mode) (\.elc\' . elisp-byte-code-mode) (\.dz\' nil jka-compr) (\.xz\' nil jka-compr) (\.lzma\' nil jka-compr) (\.lz\' nil jka-compr) (\.g?z\' nil jka-compr) (\.bz2\' nil jka-compr) (\.Z\' nil jka-compr) (\.vr[hi]?\' . vera-mode) (\(?:\.\(?:rbw?\|ru\|rake\|thor\|jbuilder\|rabl\|gemspec\|podspec\)\|/\(?:Gem\|Rake\|Cap\|Thor\|Puppet\|Berks\|Vagrant\|Guard\|Pod\)file\)\' . ruby-mode) (\.re?st\' . rst-mode) (\.pyw?\' . python-mode) (\.scss\' . scss-mode) (\.awk\' . awk-mode) (\.\(u?lpc\|pike\|pmod\(\.in\)?\)\' . pike-mode) (\.idl\' . idl-mode) (\.java\' . java-mode) (\.m\' . objc-mode) (\.ii\' . c++-mode) (\.i\' . c-mode) (\.lex\' . c-mode) (\.y\(acc\)?\' . c-mode) (\.[ch]\' . c-mode) (\.\(CC?\|HH?\)\' . c++-mode) (\.[ch]\(pp\|xx\|\+\+\)\' . c++-mode) (\.\(cc\|hh\)\' . c++-mode) (\.\(bat\|cmd\)\' . bat-mode) (\.[sx]?html?\(\.[a-zA-Z_]+\)?\' . html-mode) (\.svgz?\' . image-mode) (\.svgz?\' . xml-mode) (\.x[bp]m\' . image-mode) (\.x[bp]m\' . c-mode) (\.p[bpgn]m\' . image-mode) (\.tiff?\' . image-mode) (\.gif\' . image-mode) (\.png\' . image-mode) (\.jpe?g\' . image-mode) (\.te?xt\' . text-mode) (\.[tT]e[xX]\' . tex-mode) (\.ins\' . tex-mode) (\.ltx\' . latex-mode) (\.dtx\' . doctex-mode) (\.org\' . org-mode) (\.el\' . emacs-lisp-mode) (Project\.ede\' . emacs-lisp-mode) (\.\(scm\|stk\|ss\|sch\)\' . scheme-mode) (\.l\' . lisp-mode) (\.li?sp\' . lisp-mode) (\.[fF]\' . fortran-mode) (\.for\' . fortran-mode) (\.p\' . pascal-mode) (\.pas\' . pascal-mode) (\.\(dpr\|DPR\)\' . delphi-mode) (\.ad[abs]\' . ada-mode) (\.ad[bs].dg\' . ada-mode) (\.\([pP]\([Llm]\|erl\|od\)\|al\)\' . perl-mode) (Imakefile\' . makefile-imake-mode) (Makeppfile\(?:\.mk\)?\' . makefile-makepp-mode) (\.makepp\' . makefile-makepp-mode) (\.mk\' . makefile-gmake-mode) (\.make\' . makefile-gmake-mode) ([Mm]akefile\' . makefile-gmake-mode) (\.am\' . makefile-automake-mode) (\.texinfo\' . texinfo-mode) (\.te?xi\' . texinfo-mode) (\.[sS]\' . asm-mode) (\.asm\' . asm-mode) (\.css\' . css-mode) (\.mixal\' . mixal-mode) (\.gcov\' . compilation-mode) (/\.[a-z0-9-]*gdbinit . gdb-script-mode) (-gdb\.gdb . gdb-script-mode) ([cC]hange\.?[lL]og?\' . change-log-mode) ([cC]hange[lL]og[-.][0-9]+\' . change-log-mode) (\$CHANGE_LOG\$\.TXT . change-log-mode) (\.scm\.[0-9]*\' . scheme-mode) (\.[ckz]?sh\'\|\.shar\'\|/\.z?profile\' . sh-mode) (\.bash\' . sh-mode) (\(/\|\`\)\.\(bash_\(profile\|history\|log\(in\|out\)\)\|z?log\(in\|out\)\)\' . sh-mode) (\(/\|\`\)\.\(shrc\|[kz]shrc\|bashrc\|t?cshrc\|esrc\)\' . sh-mode) (\(/\|\`\)\.\([kz]shenv\|xinitrc\|startxrc\|xsession\)\' . sh-mode) (\.m?spec\' . sh-mode) (\.m[mes]\' . nroff-mode) (\.man\' . nroff-mode) (\.sty\' . latex-mode) (\.cl[so]\' . latex-mode) (\.bbl\' . latex-mode) (\.bib\' . bibtex-mode) (\.bst\' . bibtex-style-mode) (\.sql\' . sql-mode) (\.m[4c]\' . m4-mode) (\.mf\' . metafont-mode) (\.mp\' . metapost-mode) (\.vhdl?\' . vhdl-mode) (\.article\' . text-mode) (\.letter\' . text-mode) (\.i?tcl\' . tcl-mode) (\.exp\' . tcl-mode) (\.itk\' . tcl-mode) (\.icn\' . icon-mode) (\.sim\' . simula-mode) (\.mss\' . scribe-mode) (\.f9[05]\' . f90-mode) (\.f0[38]\' . f90-mode) (\.indent\.pro\' . fundamental-mode) (\.\(pro\|PRO\)\' . idlwave-mode) (\.srt\' . srecode-template-mode) (\.prolog\' . prolog-mode) (\.tar\' . tar-mode) (\.\(arc\|zip\|lzh\|lha\|zoo\|[jew]ar\|xpi\|rar\|7z\|ARC\|ZIP\|LZH\|LHA\|ZOO\|[JEW]AR\|XPI\|RAR\|7Z\)\' . archive-mode) (\.oxt\' . archive-mode) (\.\(deb\|[oi]pk\)\' . archive-mode) (\`/tmp/Re . text-mode) (/Message[0-9]*\' . text-mode) (\`/tmp/fol/ . text-mode) (\.oak\' . scheme-mode) (\.sgml?\' . sgml-mode) (\.x[ms]l\' . xml-mode) (\.dbk\' . xml-mode) (\.dtd\' . sgml-mode) (\.ds\(ss\)?l\' . dsssl-mode) (\.jsm?\' . javascript-mode) (\.json\' . javascript-mode) (\.[ds]?vh?\' . verilog-mode) (\.by\' . bovine-grammar-mode) (\.wy\' . wisent-grammar-mode) ([:/\]\..*\(emacs\|gnus\|viper\)\' . emacs-lisp-mode) (\`\..*emacs\' . emacs-lisp-mode) ([:/]_emacs\' . emacs-lisp-mode) (/crontab\.X*[0-9]+\' . shell-script-mode) (\.ml\' . lisp-mode) (\.ld[si]?\' . ld-script-mode) (ld\.?script\' . ld-script-mode) (\.xs\' . c-mode) (\.x[abdsru]?[cnw]?\' . ld-script-mode) (\.zone\' . dns-mode) (\.soa\' . dns-mode) (\.asd\' . lisp-mode) (\.\(asn\|mib\|smi\)\' . snmp-mode) (\.\(as\|mi\|sm\)2\' . snmpv2-mode) (\.\(diffs?\|patch\|rej\)\' . diff-mode) (\.\(dif\|pat\)\' . diff-mode) (\.[eE]?[pP][sS]\' . ps-mode) (\.\(?:PDF\|DVI\|OD[FGPST]\|DOCX?\|XLSX?\|PPTX?\|pdf\|djvu\|dvi\|od[fgpst]\|docx?\|xlsx?\|pptx?\)\' . doc-view-mode-maybe) (configure\.\(ac\|in\)\' . autoconf-mode) (\.s\(v\|iv\|ieve\)\' . sieve-mode) (BROWSE\' . ebrowse-tree-mode) (\.ebrowse\' . ebrowse-tree-mode) (#\*mail\* . mail-mode) (\.g\' . antlr-mode) (\.mod\' . m2-mode) (\.ses\' . ses-mode) (\.docbook\' . sgml-mode) (\.com\' . dcl-mode) (/config\.\(?:bat\|log\)\' . fundamental-mode) (\.\(?:[iI][nN][iI]\|[lL][sS][tT]\|[rR][eE][gG]\|[sS][yY][sS]\)\' . conf-mode) (\.\(?:desktop\|la\)\' . conf-unix-mode) (\.ppd\' . conf-ppd-mode) (java.+\.conf\' . conf-javaprop-mode) (\.properties\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-javaprop-mode) (\`/etc/\(?:DIR_COLORS\|ethers\|.?fstab\|.*hosts\|lesskey\|login\.?de\(?:fs\|vperm\)\|magic\|mtab\|pam\.d/.*\|permissions\(?:\.d/.+\)?\|protocols\|rpc\|services\)\' . conf-space-mode) (\`/etc/\(?:acpid?/.+\|aliases\(?:\.d/.+\)?\|default/.+\|group-?\|hosts\..+\|inittab\|ksysguarddrc\|opera6rc\|passwd-?\|shadow-?\|sysconfig/.+\)\' . conf-mode) ([cC]hange[lL]og[-.][-0-9a-z]+\' . change-log-mode) (/\.?\(?:gitconfig\|gnokiirc\|hgrc\|kde.*rc\|mime\.types\|wgetrc\)\' . conf-mode) (/\.\(?:enigma\|gltron\|gtk\|hxplayer\|net\|neverball\|qt/.+\|realplayer\|scummvm\|sversion\|sylpheed/.+\|xmp\)rc\' . conf-mode) (/\.\(?:gdbtkinit\|grip\|orbital/.+txt\|rhosts\|tuxracer/options\)\' . conf-mode) (/\.?X\(?:default\|resource\|re\)s\> . conf-xdefaults-mode) (/X11.+app-defaults/\|\.ad\' . conf-xdefaults-mode) (/X11.+locale/.+/Compose\' . conf-colon-mode) (/X11.+locale/compose\.dir\' . conf-javaprop-mode) (\.~?[0-9]+\.[0-9][-.0-9]*~?\' nil t) (\.\(?:orig\|in\|[bB][aA][kK]\)\' nil t) ([/.]c\(?:on\)?f\(?:i?g\)?\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-mode-maybe) (\.[1-9]\' . nroff-mode) (\.tgz\' . tar-mode) (\.tbz2?\' . tar-mode) (\.txz\' . tar-mode) (\.tgz\' . tar-mode) (\.tbz2?\' . tar-mode) (\.txz\' . tar-mode))
+
+* COMMENT AUCTeX
+Setup for AUC TeX
+#+begin_src emacs-lisp
+;(starter-kit-install-if-needed 'auctex)
+(use-package auctex
+  :defer t
+  :ensure t)
+
+;(require 'tex-site)
+;;(load "preview-latex.el" nil t t)
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq TeX-global-PDF-mode t)
+(setq-default TeX-master t)
+
+(eval-after-load "tex" 
+  '(setcdr (assoc "LaTeX" TeX-command-list)
+          '("%`%l%(mode) -shell-escape%' %t"
+          TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX")
+    )
+  )
+#+end_src
+* PDF-Tools
+#+BEGIN_SRC emacs-lisp
+(use-package pdf-tools
+  :magic ("%PDF" . pdf-view-mode)
+  :config
+  (pdf-tools-install))
+#+END_SRC
+
+* Org collector (for tables of properties)
+#+BEGIN_SRC emacs-lisp :tangle yes
+(require 'org-collector)
+#+END_SRC
+
+* Setup for gnus
+#+BEGIN_SRC emacs-lisp :tangle no
+(starter-kit-load "gnus")
+#+END_SRC
+Modify basic set by having bbdb automatically snarf addresses from
+gnus (per http://www.emacswiki.org/emacs/GnusGmail#toc11):
+#+begin_src emacs-lisp :tangle no
+(setq bbdb/news-auto-create-p t)
+#+end_src
+* Load org-protocol, to allow communication with Chrome
+[2012-08-03 Fri 08:30]
+#+begin_src emacs-lisp :tangle yes
+(server-start) ; Start emacs server
+(require 'org-protocol)
+#+end_src
+
+
+* Set up for publishing particular web sites
+** ARE 201
+[2012-08-23 Thu 18:20]
+#+begin_src emacs-lisp
+  (setq org-publish-project-alist
+        '(("Ethan Ligon" 
+                :base-directory "~/public_html"
+                :publishing-directory "/ssh:ligon@nature.berkeley.edu:/home/ligon/public_html"
+                :publishing-function org-html-publish-to-html
+                :section-numbers nil
+                :table-of-contents nil
+                :auto-preamble t      
+                :author "Ethan Ligon"
+                :email "ligon@berkeley.edu")
+
+               ("University Service"
+                :base-directory "~/public_html/University_Service"
+                :publishing-directory "/ssh:ligon@nature.berkeley.edu:/home/ligon/public_html/University_Service"
+                :base-extension "pdf\\|PDF"
+                :publishing-function org-publish-attachment
+                :section-numbers nil
+                :table-of-contents nil
+                :auto-preamble t      
+                :author "Ethan Ligon"
+                :email "ligon@berkeley.edu")
+
+              ("Ethan Ligon Website" :components 
+                ("Ethan Ligon"
+                 "University Service")
+                :style "<link rel=stylesheet
+                         href=\"/css/are2.css\" type=\"text/css\">")
+
+               ("ARE201"
+                :base-directory "~/Teaching/ARE201"
+                :publishing-directory "/ssh:ligon@nature.berkeley.edu:/web/areweb/courses/ARE201/fall2013"
+                :publishing-function org-html-publish-to-html
+                :section-numbers nil
+                :table-of-contents nil
+                :auto-preamble t      
+                :author "Ethan Ligon"
+                :email "ligon@berkeley.edu")
+
+               ("ARE201 Readings"
+                :base-directory "~/Teaching/ARE201/Readings"
+                :publishing-directory "/ssh:ligon@nature.berkeley.edu:/web/areweb/courses/ARE201/fall2013/Readings"
+                :base-extension "pdf\\|PDF"
+                :publishing-function org-publish-attachment
+                :section-numbers nil
+                :table-of-contents nil
+                :auto-preamble t      
+                :author "Ethan Ligon"
+                :email "ligon@berkeley.edu")
+
+               ("ARE201 Problem Sets"
+                :base-directory "~/Teaching/ARE201/ProblemSets"
+                :publishing-directory "/ssh:ligon@nature.berkeley.edu:/web/areweb/courses/ARE201/fall2013/ProblemSets"
+                :base-extension "pdf\\|PDF"
+                :publishing-function org-publish-attachment
+                :section-numbers nil
+                :table-of-contents nil
+                :auto-preamble t      
+                :author "Ethan Ligon"
+                :email "ligon@berkeley.edu")
+
+               ("ARE201 Miscellany"
+                :base-directory "~/Teaching/ARE201/Misc"
+                :publishing-directory "/ssh:ligon@nature.berkeley.edu:/web/areweb/courses/ARE201/fall2013/Misc"
+                :base-extension "pdf\\|PDF\\|txt"
+                :publishing-function org-publish-attachment
+                :section-numbers nil
+                :table-of-contents nil
+                :auto-preamble t      
+                :author "Ethan Ligon"
+                :email "ligon@berkeley.edu")
+
+               ("ARE201 Website" :components 
+                ("ARE201" 
+                 "ARE201 Readings" 
+                 "ARE201 Miscellany"
+                 "ARE201 Problem Sets")
+                :style "<link rel=stylesheet
+                         href=\"/css/are2.css\" type=\"text/css\">"
+                )))
+#+end_src
+
+#+results:
+| Ethan Ligon         | :base-directory | ~/public_html                    | :publishing-directory | /ssh:ligon@nature.berkeley.edu:/home/ligon/public_html                    | :publishing-function | org-html-publish-to-html | :section-numbers | nil                  | :table-of-contents     | nil              | :auto-preamble | t                  | :author | Ethan Ligon    | :email | ligon@are.berkeley.edu |             |        |                        |
+| University Service  | :base-directory | ~/public_html/University_Service | :publishing-directory | /ssh:ligon@nature.berkeley.edu:/home/ligon/public_html/University_Service | :base-extension      | pdf\                     | PDF              | :publishing-function | org-publish-attachment | :section-numbers | nil            | :table-of-contents | nil     | :auto-preamble | t      | :author                | Ethan Ligon | :email | ligon@are.berkeley.edu |
+| Ethan Ligon Website | :components     | (Ethan Ligon University Service) | :style                | <link rel=stylesheet                                                      |                      |                          |                  |                      |                        |                  |                |                    |         |                |        |                        |             |        |                        |
+
+* COMMENT Set up org2blog to publish to ikp.devecon.org
+#+begin_src emacs-lisp :tangle yes :results silent
+(setq load-path (cons "~/.emacs.d/src/org2blog/" load-path))
+(require 'org2blog-autoloads)
+
+(setq org2blog/wp-blog-alist
+      '(("ikpblog"
+         :url "http://ikp.devecon.org/xmlrpc.php"
+         :username "eligon"
+         :default-title "Once thought, now blogged"
+         :default-categories ("economics")
+         :tags-as-categories nil)))
+#+end_src
+
+
+* Stuff to require from org/contrib
+#+begin_src emacs-lisp :tangle yes :results silent
+(if (boundp 'org-mode-user-contrib-lisp-path)
+    (add-to-list 'load-path org-mode-user-contrib-lisp-path)
+  (add-to-list 'load-path (expand-file-name "~/.emacs.d/src/org-mode/contrib/lisp")))
+
+(require 'orgtbl-sqlinsert)
+#+end_src
+* Turn on abbrev mode for *.org files, and add some abbrevs.
+#+BEGIN_SRC emacs-lisp :tangle yes
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+
+(define-skeleton skel-org-unnumbered-equation
+  "Insert LaTeX for an unnumbered equation."
+  ""
+  "#\n"
+  "\\[\n"
+  "\\]\n"
+  "#\n")
+
+(define-abbrev org-mode-abbrev-table "eqn" "" 'skel-org-unnumbered-equation)
+
+
+#+END_SRC
+
+#+results:
+: eqn
+
+
+* Define time-date-source stamp for tangled python files
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-to-list 'org-babel-default-header-args:python
+                  '((:prologue . (format "# Tangled from %s on %s" (buffer-file-name) (current-time-string)))))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq org-babel-default-header-args:python
+                  '(((:prologue . '(format "# Tangled from %s" (buffer-file-name))))))
+#+END_SRC
+
+#+begin_src  python :tangle /tmp/test.py :prologue (format "# Tangled from %s on %s" (buffer-file-name) (current-time-string))
+print "Hello, world!"
+#+end_src
+
+
+* Add "tel" link type
+#+BEGIN_SRC emacs-lisp :tangle yes
+(org-add-link-type "tel" 'phone)
+#+END_SRC
+* Emacs speaks statistics (ess)
+#+BEGIN_SRC emacs-lisp
+(use-package ess
+  :ensure t
+  :init (require 'ess-site))
+#+END_SRC
+
+#+results:
+: ess-site
+
+* John Kitchin's scimax 
+
+This code just sets up paths to find scimax bits
+#+BEGIN_SRC emacs-lisp
+(setq scimax-dir (expand-file-name "~/.emacs.d/scimax/"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/scimax"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/scimax/ox-ipynb"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package lispy)
+(require 'lispy)
+(use-package org-ref)
+(require 's)
+(require 'scimax-org)
+;(require 'scimax)
+;(require 'ox-ipynb)
+#+END_SRC
+
+#+results:
+: ox-ipynb
+
+** Experimental
+   #+begin_src emacs-lisp :results silent :tangle yes
+   (setq org-babel-ipython-debug t)
+   #+end_src
+
+
+   #+begin_src emacs-lisp :results silent :tangle yes
+   (setq org-babel-async-ipython t)
+   #+end_src
+
+
+
+
+* LaTeX Org-Export Setup
+Following code-block sets markers used by async export.
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; * START_ASYNC_INIT
+#+END_SRC
+
+** New exporter for latex, etc.:
+#+begin_src emacs-lisp 
+(require 'ox-beamer)
+(require 'ox-html)
+(require 'ox-ascii)
+(require 'ox-odt)
+(require 'ox-ipynb)
+(org-defkey org-mode-map (kbd "C-c C-e") 'org-export-dispatch)
+(setq org-export-backends (quote (ascii beamer html icalendar latex ipynb md koma-letter)))
+(setq org-export-initial-scope (quote subtree))
+(setq org-export-with-email nil)
+(setq org-export-with-smart-quotes t)
+(setq org-latex-title-command "\\maketitle")
+#+end_src
+
+#+results:
+: \maketitle
+
+** Default LaTeX classes
+ #+BEGIN_SRC emacs-lisp :tangle yes
+ (setq org-latex-classes
+    (quote
+     (("beamer" "\\documentclass[presentation,t]{beamer}
+       [DEFAULT-PACKAGES]
+       [PACKAGES]
+       [EXTRA]"
+       ("\\section{%s}" . "\\section*{%s}")
+       ("\\subsection{%s}" . "\\subsection*{%s}")
+       ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+      ("article" "\\RequirePackage{rotating}\n\\documentclass[12pt]{amsart}"
+       ("\\section{%s}" . "\\section*{%s}")
+       ("\\subsection{%s}" . "\\subsection*{%s}")
+       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+       ("\\paragraph{%s}" . "\\paragraph*{%s}")
+       ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+      ("report" "\\documentclass[11pt]{report}"
+       ("\\part{%s}" . "\\part*{%s}")
+       ("\\chapter{%s}" . "\\chapter*{%s}")
+       ("\\section{%s}" . "\\section*{%s}")
+       ("\\subsection{%s}" . "\\subsection*{%s}")
+       ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+      ("book" "\\documentclass[11pt]{book}"
+       ("\\part{%s}" . "\\part*{%s}")
+       ("\\chapter{%s}" . "\\chapter*{%s}")
+       ("\\section{%s}" . "\\section*{%s}")
+       ("\\subsection{%s}" . "\\subsection*{%s}")
+       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))))
+ #+END_SRC
+
+ #+results:
+ | beamer | \documentclass[presentation]{beamer} |
+
+ #+BEGIN_SRC emacs-lisp :tangle yes
+ (setq org-latex-default-packages-alist
+    (quote
+     (("AUTO" "inputenc" t)
+      ;;("T1" "fontenc" t) ; Commented out to deal with https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=810617.  Restore after libcairo2 updated.
+      ("" "lmodern" t)
+      ;;("" "fixltx2e" nil) ; Not required for LaTeX releases post 2015.
+      ("" "graphicx" t)
+      ("" "longtable" nil)
+      ("" "float" nil)
+      ("" "wrapfig" nil)
+      ("" "rotating" nil)
+      ("normalem" "ulem" t)
+      ("" "textcomp" t)
+      ("" "marvosym" t)
+      ("" "wasysym" t)
+      ("" "hyperref" nil)
+      "\\tolerance=1000"
+      ("authordate-trad,backend=biber,natbib" "biblatex-chicago" nil)
+      "\\addbibresource{main.bib}"
+      "\\addbibresource{ligon.bib}"
+      "\\renewcommand{\\refname}{}"
+      ("" "booktabs" nil))))
+ #+END_SRC
+
+
+** Make links export in LaTeX to \refs.
+ #+begin_src emacs-lisp
+ (setq org-latex-hyperref-format "\\ref{%s}")
+ #+end_src
+
+** Setup for Tables in LaTeX export
+ #+BEGIN_SRC emacs-lisp :tangle yes
+ (setq org-latex-default-figure-position "htbp")
+ (setq org-latex-prefer-user-labels t)
+ (setq org-latex-table-caption-above nil)
+ (setq org-latex-tables-booktabs t)
+ #+END_SRC
+
+** Set up latex-to-pdf process for org using shell escape
+ Calling latexmk also relies on $HOME/.latexmkrc.  This is important
+ for passing options to pdflatex; at present mine looks like:
+ #+BEGIN_example 
+ $pdflatex = 'pdflatex --shell-escape -interaction=nonstopmode %O %S -file-line-error -synctex=1';
+ #+END_example
+ #+begin_src emacs-lisp :tangle yes
+ ;;(setq org-latex-to-pdf-process '("LC_ALL=C PDFLATEX=\"pdflatex –shell-escape\" texi2dvi -p %f"))
+ ;; (setq org-latex-to-pdf-process '("LC_ALL=C PDFLATEX=\"pdflatex –shell-escape\" latexmk -pdf -f %f"))
+ (setq org-latex-pdf-process (list "latexmk -f -pdf %f"))
+ #+end_src
+
+** Use minted for listings
+ #+begin_src emacs-lisp 
+   (require 'ox-latex)
+   (setq org-latex-listings 'minted)
+   (add-to-list 'org-latex-packages-alist '("" "minted"))
+   (setq org-latex-minted-options '(("fontsize" "\\footnotesize")
+                                    ("frame" "lines")
+                                    ("baselinestretch" "1")))
+ #+end_src
+
+** Use Koma-Script for letters
+   See http://orgmode.org/worg/exporters/koma-letter-export.html
+#+BEGIN_SRC emacs-lisp
+(require 'ox-koma-letter)
+(eval-after-load 'ox '(require 'ox-koma-letter))
+
+(eval-after-load 'ox-koma-letter
+  '(progn
+     (add-to-list 'org-latex-classes
+                  '("ucb-letter"
+                    "\\documentclass\{scrlttr2\}
+     \\usepackage[english]{babel}
+     \\setkomavar{frombank}{(1234)\\,567\\,890}
+     \[DEFAULT-PACKAGES]
+     \[PACKAGES]
+     \[EXTRA]"))
+
+     (setq org-koma-letter-default-class "ucb-letter")))
+#+END_SRC
+
+** Allow :ignore: tag to ignore headlines
+See https://emacs.stackexchange.com/questions/9492/is-it-possible-to-export-content-of-subtrees-without-their-headings
+#+BEGIN_SRC emacs-lisp
+(require 'ox-extra)
+(ox-extras-activate '(ignore-headlines))
+#+END_SRC
+
+#+results:
+
+** Async export
+#+BEGIN_SRC emacs-lisp
+(eval-after-load 'ox ;; shouldn't be byte compiled.
+'(when (and user-init-file (buffer-file-name)) ;; don't do it in async
+(setq org-export-async-init-file
+(expand-file-name "init-org-async.el" (file-name-directory user-init-file)))))
+
+(setq org-export-async-debug t)
+#+END_SRC
+
+#+results:
+: t
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+;; * END_ASYNC_INIT
+#+END_SRC
+
+* Set org-file apps
+Set this instead in machine-specific file
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq org-file-apps
+    (quote
+    ((auto-mode . emacs)
+     ("\\.mm\\'" . default)
+     ("\\.x?html?\\'" . "google-chrome %s")
+     ("\\.pdf\\'" . "google-chrome %s"))))
+#+END_SRC
+
+#+results:
+: ((auto-mode . emacs) (\.mm\' . default) (\.x?html?\' . google-chrome %s) (\.pdf\' . garcon-url-handler %s))
+
+
+
+* Org-ref (from jkitchin)
+
+You should set these variables. Here is an example of how mine are set in an init.el file.
+
+#+BEGIN_SRC emacs-lisp
+(setq reftex-default-bibliography (expand-file-name "~/bibtex/main.bib"))
+
+;; see org-ref for use of these variables
+(setq org-ref-default-bibliography (expand-file-name "~/bibtex/main.bib"))
+
+(setq org-ref-bibliography-notes (expand-file-name "~/Papers/notes.org"))
+(setq org-ref-pdf-directory (expand-file-name "~/Papers/bibtex-pdfs/"))
+#+END_SRC
+
+#+results:
+: /home/ethanligon/Papers/bibtex-pdfs/
+
+You may want to set some convenient keys for working in your bibtex file. These commands operate on the citation key at point.
+
+If you use helm-bibtex as the citation key completion method you should set these variables too.
+
+#+BEGIN_SRC emacs-lisp
+(setq bibtex-completion-bibliography '("~/bibtex/main.bib" "~/bibtex/ligon.bib")
+      bibtex-completion-library-path (expand-file-name "~/Papers/bibtex-pdfs")
+      bibtex-completion-notes-path (expand-file-name "~/Papers/notes.org"))
+
+;; open pdf with system pdf viewer (works on mac)
+(setq bibtex-completion-pdf-open-function
+  (lambda (fpath)
+    (start-process "open" "*open*" "open" fpath)))
+
+;; alternative
+;; (setq bibtex-completion-pdf-open-function 'org-open-file)
+#+END_SRC
+
+#+results:
+: /home/ethanligon/Papers/notes.org
+
+There are alternative citation key completion methods.
+- org-ref-helm-cite :: An alternative to helm-bibtex
+- org-ref-ivy-cite :: Uses ivy for key completion
+- org-ref-reftex :: Uses reftex and org-mode for completion (no longer developed)
+
+Finally, add this to your init.el files.
+#+BEGIN_SRC emacs-lisp
+(require 'org-ref)
+(setq bibtex-dialect 'biblatex) 
+#+END_SRC
+
+#+results:
+: biblatex
+
+Go forth and citate.
+
+* Source Blocks
+** Set up babel
+#+begin_src emacs-lisp :tangle yes
+  (setq org-ditaa-jar-path "~/.emacs.d/misc/ditaa.jar")
+
+  (add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
+
+  ; Make babel results blocks lowercase
+  (setq org-babel-results-keyword "results")
+
+  (defun bh/display-inline-images ()
+    (condition-case nil
+        (org-display-inline-images)
+      (error nil)))
+
+   (org-babel-do-load-languages                                        
+    (quote org-babel-load-languages)                                   
+    (quote ((emacs-lisp . t)                                           
+            (dot . t)                                                
+            (python . t)                                               
+            (shell . t) ; If an error, trying commenting this line...  
+            ;(sh . t)   ; ...and uncommenting this one.                
+            (org . t)                                                  
+            (ditaa . t)                                              
+            (R . t)                                                  
+            (ipython . t)                                            
+            (octave . nil)                                             
+            (gnuplot . nil)                                            
+            (ledger . nil)                                             
+            (asymptote . nil)                                          
+            (latex . nil))))                                           
+
+  ; Do not prompt to confirm evaluation
+  ; This may be dangerous - make sure you understand the consequences
+  ; of setting this -- see the docstring for details
+  (setq org-confirm-babel-evaluate nil)
+
+#+end_src
+
+
+** Change way in which src blocks are indented
+#+begin_src emacs-lisp :tangle yes
+(setq org-src-preserve-indentation t)
+(setq org-src-tab-acts-natively t)
+#+end_src
+
+#+results:
+
+* Install elpy
+https://github.com/jorgenschaefer/elpy
+#+BEGIN_SRC emacs-lisp :tangle yes
+(package-initialize)
+(elpy-enable)
+#+END_SRC
+* Using ipython as the interpreter
+The following from https://github.com/jorgenschaefer/elpy/wiki/FAQ#q-how-do-i-make-elpy-work-well-with-org-mode
+
+Note that with the introduction of ipython 5.* there are problems using ipython for the babel command.  See https://emacs.stackexchange.com/questions/24453/weird-shell-output-when-using-ipython-5
+#+BEGIN_SRC emacs-lisp :tangle no
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "--pylab --pdb --nosep --classic --no-confirm-exit --simple-prompt"
+      python-shell-prompt-regexp ">>> "
+      python-shell-prompt-output-regexp ""
+      python-shell-completion-setup-code "from IPython.core.completerlib import module_completion"
+      python-shell-completion-module-string-code "';'.join(module_completion('''%s'''))\n"
+      python-shell-completion-string-code "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"
+      )
+
+(setq org-babel-python-command "ipython --no-banner --pylab --pdb --nosep --classic --no-confirm-exit --simple-prompt")
+#+END_SRC
+
+#+results:
+: ipython --no-banner --pylab --pdb --nosep --classic --no-confirm-exit --simple-prompt
+** Getting python indentation correct
+#+BEGIN_SRC emacs-lisp :tangle no
+(add-hook 'python-mode-hook
+  (lambda () (setq python-indent-offset 4)))
+#+END_SRC

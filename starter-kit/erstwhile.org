@@ -1,0 +1,11 @@
+* Set org-file apps
+Override settings (that use chrome directly) in =ethanligon.org=.
+#+BEGIN_SRC emacs-lisp :results silent
+(setq org-file-apps
+    (quote
+    ((auto-mode . emacs)
+     ("\\.mm\\'" . default)
+     ("\\.x?html?\\'" . "garcon-url-handler %s")
+     ("\\.pdf\\'" . "garcon-url-handler %s"))))
+#+END_SRC
+
