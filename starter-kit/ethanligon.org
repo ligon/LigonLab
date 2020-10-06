@@ -10,7 +10,7 @@
 
 * Load "edit-server" to allow one to call emacs from chromium
 Minimal, from chrome-extension://ljobjlafonikaiipfkggjbhkghgicgoh/fancy-settings/source/index.html
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site-lisp"))
 (when (require 'edit-server nil t)
   (setq edit-server-new-frame nil)
@@ -94,7 +94,7 @@ More complicated?
 : eww-browse-url
 
 ** Allow scrolling to very bottom of buffer w/C-v
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq scroll-error-top-bottom t)
 #+end_src
 
@@ -167,7 +167,7 @@ See also secret codes presently in customize.el.
 
 * COMMENT Setup for mobile-org
 [2013-01-07 Mon 12:08]
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq org-mobile-directory "/home/ligon/.Misc/Organization/MobileOrg")
 (setq org-mobile-inbox-for-pull "~/.Misc/Organization/from-mobile.org")
 #+end_src
@@ -229,7 +229,7 @@ Following notes from
 http://orgmode.org/worg/org-tutorials/encrypting-files.html.
 Note: On my pixelbook, it's important to use a graphical
 pinentry program (e.g., pinentry-gtk2 and *not* pinentry-curses).
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (require 'epa-file)
 (epa-file-enable)
 
@@ -257,7 +257,7 @@ You decrypt the heading temporarily when you need access to the data
 and org-mode re-encrypts the heading as soon as you save the file.
 
 I use the following setup for encryption:
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (require 'org-crypt)
 ; Encrypt all entries before saving
 (org-crypt-use-before-save-magic)
@@ -310,7 +310,7 @@ which re-encrypts the entry immediately.  This pretty much guarantees that
 my autosave files never have decrypted data stored in them.
 
 I disable the default org crypt auto-save setting as follows:
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq org-crypt-disable-auto-save nil)
 #+end_src
 
@@ -340,17 +340,21 @@ I disable the default org crypt auto-save setting as follows:
   (starter-kit-load "bernt_hansen")
 #+end_src
 ** Turn on inline images at startup
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq org-startup-with-inline-images t)
 #+end_src
 
 #+results:
 : t
 
+* Automatically use git to manage attachments
+  #+begin_src emacs-lisp
+(require 'org-attach-git)
+  #+end_src
 * Material borrowed from bernt_hansen
 
 ** COMMENT Make org-structure stuff lowercase
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (mapc (lambda (arg) (setcdr arg (list (downcase (cadr arg)))))
     org-structure-template-alist)
 #+end_src
@@ -370,7 +374,7 @@ I disable the default org crypt auto-save setting as follows:
 (setq org-drawers (quote ("PROPERTIES" "LOGBOOK" "SETUP")))
 #+end_src
 ** Org-capture
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq org-default-notes-file (concat "~/.Misc/Organization/refile_" system-name ".org"))
 
 ;; I use C-c r to start capture mode when using SSH from my Android phone
@@ -425,7 +429,7 @@ like this:
 ,  [2010-05-08 Sat 13:53]
 #+end_src
 Removes empty =LOGBOOK= drawers if they occur:
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; Remove empty LOGBOOK drawers on clock out
 (defun bh/remove-empty-drawer-on-clock-out ()
   (interactive)
@@ -475,7 +479,7 @@ don't want to spend time waiting for it to be generated.
 :CUSTOM_ID: CustomAgendaViewSetup
 :END:
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; Dim blocked tasks
 (setq org-agenda-dim-blocked-tasks t)
 
@@ -741,7 +745,7 @@ my system.  I can always explicitly filter to just =farm= tasks with
 I have the following setup to allow =/ RET= to filter tasks based on
 the description above.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (defun bh/org-auto-exclude-function (tag)
   "Automatic task exclusion in the agenda with / RET"
   (and (cond
@@ -1025,7 +1029,7 @@ the new punch-in and punch-out I don't need these as much anymore.
 =f9-SPC= calls =bh/clock-in-last-task= which switches the clock back
 to the previously clocked task.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (require 'org-id)
 (defun bh/clock-in-task-by-id (id)
   "Clock in a task by id"
@@ -1204,7 +1208,7 @@ hit the =S-<up arrow>= or =S-<down arrow>= keys to change the time.
 
 The following setting makes time editing use discrete minute intervals (no rounding)
 increments:
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq org-time-stamp-rounding-minutes (quote (1 1)))
 #+end_src
 
@@ -1219,7 +1223,7 @@ agenda and clock gaps and overlaps are identified.
 I want my clock entries to be as accurate as possible.
 
 The following setting shows 1 minute clocking gaps.
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq org-agenda-clock-consistency-checks
       (quote (:max-duration "4:00"
               :min-duration 0
@@ -1258,7 +1262,7 @@ emacsclient -e '(bh/resume-clock)'
 
 The resume clock function just returns the clock to the previous clocking task
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (defun bh/resume-clock ()
   (interactive)
   (if (marker-buffer org-clock-interrupted-task)
@@ -1270,7 +1274,7 @@ The resume clock function just returns the clock to the previous clocking task
 If no task was clocking =bh/resume-clock= just stops the clock.
 * Org Agenda
   Define agenda files:
-#+begin_src emacs-lisp :tangle yes :exports none
+#+begin_src emacs-lisp :exports none
 (setq org-agenda-files "~/.emacs.d/agenda_files")
 #+end_src
 
@@ -1385,7 +1389,7 @@ Setup for AUC TeX
 #+END_SRC
 
 * Org collector (for tables of properties)
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp
 (require 'org-collector)
 #+END_SRC
 
@@ -1400,7 +1404,7 @@ gnus (per http://www.emacswiki.org/emacs/GnusGmail#toc11):
 #+end_src
 * Load org-protocol, to allow communication with Chrome
 [2012-08-03 Fri 08:30]
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (server-start) ; Start emacs server
 (require 'org-protocol)
 #+end_src
@@ -1497,7 +1501,7 @@ gnus (per http://www.emacswiki.org/emacs/GnusGmail#toc11):
 | Ethan Ligon Website | :components     | (Ethan Ligon University Service) | :style                | <link rel=stylesheet                                                      |                      |                          |                  |                      |                        |                  |                |                    |         |                |        |                        |             |        |                        |
 
 * COMMENT Set up org2blog to publish to ikp.devecon.org
-#+begin_src emacs-lisp :tangle yes :results silent
+#+begin_src emacs-lisp :results silent
 (setq load-path (cons "~/.emacs.d/src/org2blog/" load-path))
 (require 'org2blog-autoloads)
 
@@ -1512,7 +1516,7 @@ gnus (per http://www.emacswiki.org/emacs/GnusGmail#toc11):
 
 
 * Stuff to require from org/contrib
-#+begin_src emacs-lisp :tangle yes :results silent
+#+begin_src emacs-lisp :results silent
 (if (boundp 'org-mode-user-contrib-lisp-path)
     (add-to-list 'load-path org-mode-user-contrib-lisp-path)
   (add-to-list 'load-path (expand-file-name "~/.emacs.d/src/org-mode/contrib/lisp")))
@@ -1520,7 +1524,7 @@ gnus (per http://www.emacswiki.org/emacs/GnusGmail#toc11):
 (require 'orgtbl-sqlinsert)
 #+end_src
 * Turn on abbrev mode for *.org files, and add some abbrevs.
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp
 (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
 
 (define-skeleton skel-org-unnumbered-equation
@@ -1557,7 +1561,7 @@ print "Hello, world!"
 
 
 * Add "tel" link type
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp
 (org-add-link-type "tel" 'phone)
 #+END_SRC
 * Emacs speaks statistics (ess)
@@ -1573,32 +1577,33 @@ print "Hello, world!"
 * John Kitchin's scimax 
 
 This code just sets up paths to find scimax bits
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
 (setq scimax-dir (expand-file-name "~/.emacs.d/scimax/"))
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/scimax"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/scimax/ox-ipynb"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/scimax/org-ref"))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/scimax/ox-ipynb/"))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp 
 (use-package lispy)
 (require 'lispy)
 (use-package org-ref)
 (require 's)
+(require 'ox-ipynb)
 (require 'scimax-org)
 ;(require 'scimax)
-;(require 'ox-ipynb)
 #+END_SRC
 
 #+results:
 : ox-ipynb
 
 ** Experimental
-   #+begin_src emacs-lisp :results silent :tangle yes
+   #+begin_src emacs-lisp :results silent
    (setq org-babel-ipython-debug t)
    #+end_src
 
 
-   #+begin_src emacs-lisp :results silent :tangle yes
+   #+begin_src emacs-lisp :results silent
    (setq org-babel-async-ipython t)
    #+end_src
 
@@ -1607,7 +1612,7 @@ This code just sets up paths to find scimax bits
 
 * LaTeX Org-Export Setup
 Following code-block sets markers used by async export.
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp
 ;; * START_ASYNC_INIT
 #+END_SRC
 
@@ -1617,7 +1622,7 @@ Following code-block sets markers used by async export.
 (require 'ox-html)
 (require 'ox-ascii)
 (require 'ox-odt)
-(require 'ox-ipynb)
+;(require 'ox-ipynb)
 (org-defkey org-mode-map (kbd "C-c C-e") 'org-export-dispatch)
 (setq org-export-backends (quote (ascii beamer html icalendar latex ipynb md koma-letter)))
 (setq org-export-initial-scope (quote subtree))
@@ -1630,7 +1635,7 @@ Following code-block sets markers used by async export.
 : \maketitle
 
 ** Default LaTeX classes
- #+BEGIN_SRC emacs-lisp :tangle yes
+ #+BEGIN_SRC emacs-lisp
  (setq org-latex-classes
     (quote
      (("beamer" "\\documentclass[presentation,t]{beamer}
@@ -1663,7 +1668,7 @@ Following code-block sets markers used by async export.
  #+results:
  | beamer | \documentclass[presentation]{beamer} |
 
- #+BEGIN_SRC emacs-lisp :tangle yes
+ #+BEGIN_SRC emacs-lisp 
  (setq org-latex-default-packages-alist
     (quote
      (("AUTO" "inputenc" t)
@@ -1695,7 +1700,7 @@ Following code-block sets markers used by async export.
  #+end_src
 
 ** Setup for Tables in LaTeX export
- #+BEGIN_SRC emacs-lisp :tangle yes
+ #+BEGIN_SRC emacs-lisp
  (setq org-latex-default-figure-position "htbp")
  (setq org-latex-prefer-user-labels t)
  (setq org-latex-table-caption-above nil)
@@ -1708,7 +1713,7 @@ Following code-block sets markers used by async export.
  #+BEGIN_example 
  $pdflatex = 'pdflatex --shell-escape -interaction=nonstopmode %O %S -file-line-error -synctex=1';
  #+END_example
- #+begin_src emacs-lisp :tangle yes
+ #+begin_src emacs-lisp
  ;;(setq org-latex-to-pdf-process '("LC_ALL=C PDFLATEX=\"pdflatex –shell-escape\" texi2dvi -p %f"))
  ;; (setq org-latex-to-pdf-process '("LC_ALL=C PDFLATEX=\"pdflatex –shell-escape\" latexmk -pdf -f %f"))
  (setq org-latex-pdf-process (list "latexmk -f -pdf %f"))
@@ -1766,7 +1771,7 @@ See https://emacs.stackexchange.com/questions/9492/is-it-possible-to-export-cont
 #+results:
 : t
 
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp
 ;; * END_ASYNC_INIT
 #+END_SRC
 
@@ -1842,7 +1847,7 @@ Go forth and citate.
 
 * Source Blocks
 ** Set up babel
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
   (setq org-ditaa-jar-path "~/.emacs.d/misc/ditaa.jar")
 
   (add-hook 'org-babel-after-execute-hook 'bh/display-inline-images 'append)
@@ -1881,7 +1886,7 @@ Go forth and citate.
 
 
 ** Change way in which src blocks are indented
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq org-src-preserve-indentation t)
 (setq org-src-tab-acts-natively t)
 #+end_src
@@ -1890,8 +1895,8 @@ Go forth and citate.
 
 * Install elpy
 https://github.com/jorgenschaefer/elpy
-#+BEGIN_SRC emacs-lisp :tangle yes
-(package-initialize)
+#+BEGIN_SRC emacs-lisp
+;;(package-initialize)
 (elpy-enable)
 #+END_SRC
 * Using ipython as the interpreter
