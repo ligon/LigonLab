@@ -12,7 +12,10 @@
   (setq gc-cons-threshold most-positive-fixnum)
 
   (setq custom-file "~/.emacs.d/custom.el")
-  (load custom-file)
+  (let ((custom-file "~/.emacs.d/custom.el"))
+    (when (file-exists-p custom-file)
+      (load-file custom-file))
+  ) 
 
   (customize-set-variable 'package-archives
                           '(;;("gnu"       . "https://elpa.gnu.org/packages/")
