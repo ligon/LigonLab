@@ -1923,3 +1923,7 @@ Note that with the introduction of ipython 5.* there are problems using ipython 
 (add-hook 'python-mode-hook
   (lambda () (setq python-indent-offset 4)))
 #+END_SRC
+* Display time
+#+begin_src emacs-lisp
+(display-time)
+#+end_src
