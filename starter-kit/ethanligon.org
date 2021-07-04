@@ -295,23 +295,9 @@ keeps the data in plain text as short as possible.
 :END:
 [2011-09-26 Mon 04:57]
 
-Emacs temporarily saves your buffer in an autosave file while you are
-editing your org buffer and a sufficient number of changes have
-accumulated.  If you have decrypted subtrees in your buffer these will
-be written to disk in plain text which possibly leaks sensitive information.
-To combat this org-mode now asks if you want to disable the autosave 
-functionality in this buffer.
-
-Personally I really like the autosave feature.  99% of the time my encrypted
-entries are perfectly safe to write to the autosave file since they are
-still encrypted.  I tend to decrypt an entry, read the details for what
-I need to look up and then immediately save the file again with =C-x C-s=
-which re-encrypts the entry immediately.  This pretty much guarantees that 
-my autosave files never have decrypted data stored in them.
-
-I disable the default org crypt auto-save setting as follows:
+Encrypt :crypt: entries before auto-save.
 #+begin_src emacs-lisp
-(setq org-crypt-disable-auto-save nil)
+(setq org-crypt-disable-auto-save 'encrypt)
 #+end_src
 
 #+RESULTS:
@@ -1713,9 +1699,10 @@ Following code-block sets markers used by async export.
  #+BEGIN_example 
  $pdflatex = 'pdflatex --shell-escape -interaction=nonstopmode %O %S -file-line-error -synctex=1';
  #+END_example
+ With pdflatex taking the appropriate options (especially
+ --shell-escape, since otherwise pdflatex can't deal with the minted
+ package), building a pdf from latex is as simple as:
  #+begin_src emacs-lisp
- ;;(setq org-latex-to-pdf-process '("LC_ALL=C PDFLATEX=\"pdflatex –shell-escape\" texi2dvi -p %f"))
- ;; (setq org-latex-to-pdf-process '("LC_ALL=C PDFLATEX=\"pdflatex –shell-escape\" latexmk -pdf -f %f"))
  (setq org-latex-pdf-process (list "latexmk -f -pdf %f"))
  #+end_src
 
