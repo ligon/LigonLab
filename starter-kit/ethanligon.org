@@ -6,7 +6,7 @@
  #+end_src
 
  #+RESULTS:
- : Loaded /home/ethanligon/.emacs.d/starter-kit-org.el
+ : Loaded /home/ligon/.emacs.d/starter-kit-org.el
 
 * Load "edit-server" to allow one to call emacs from chromium
 Minimal, from chrome-extension://ljobjlafonikaiipfkggjbhkghgicgoh/fancy-settings/source/index.html
@@ -128,7 +128,7 @@ More complicated?
 #+END_SRC
 * Dropbox
 See also secret codes presently in customize.el.
-#+begin_src emacs-lisp :tangle nil
+#+begin_src emacs-lisp :tangle no
 (use-package dropbox) 
 #+end_src
 
@@ -1670,14 +1670,20 @@ Following code-block sets markers used by async export.
       ("" "textcomp" t)
       ("" "marvosym" t)
       ("" "wasysym" t)
-      ("" "hyperref" nil)
+      ("" "hyperref" nil))))
+ #+END_SRC
+
+ #+BEGIN_SRC emacs-lisp 
+ (setq org-latex-packages-alist
+    (quote
+     (("" "booktabs" nil)
+      ("authordate-trad,backend=biber,natbib" "biblatex-chicago" nil))))
+#+end_src
+
       "\\tolerance=1000"
-      ("authordate-trad,backend=biber,natbib" "biblatex-chicago" nil)
       "\\addbibresource{main.bib}"
       "\\addbibresource{ligon.bib}"
       "\\renewcommand{\\refname}{}"
-      ("" "booktabs" nil))))
- #+END_SRC
 
 
 ** Make links export in LaTeX to \refs.
@@ -1710,7 +1716,7 @@ Following code-block sets markers used by async export.
  #+begin_src emacs-lisp 
    (require 'ox-latex)
    (setq org-latex-listings 'minted)
-   (add-to-list 'org-latex-packages-alist '("" "minted"))
+   (add-to-list 'org-latex-packages-alist '("" "minted" nil))
    (setq org-latex-minted-options '(("fontsize" "\\footnotesize")
                                     ("frame" "lines")
                                     ("baselinestretch" "1")))
@@ -1862,7 +1868,7 @@ Go forth and citate.
             (gnuplot . nil)                                            
             (ledger . nil)                                             
             (asymptote . nil)                                          
-            (latex . nil))))                                           
+            (latex . nil)))) 
 
   ; Do not prompt to confirm evaluation
   ; This may be dangerous - make sure you understand the consequences
