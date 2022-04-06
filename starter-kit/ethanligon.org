@@ -1376,7 +1376,7 @@ Setup for AUC TeX
 
 * Org collector (for tables of properties)
 #+BEGIN_SRC emacs-lisp
-(require 'org-collector)
+;(require 'org-collector)  # Where does this live now that contrib is gone?
 #+END_SRC
 
 * Setup for gnus
@@ -1502,7 +1502,7 @@ gnus (per http://www.emacswiki.org/emacs/GnusGmail#toc11):
 
 
 * Stuff to require from org/contrib
-#+begin_src emacs-lisp :results silent
+#+begin_src emacs-lisp :results silent :tangle no
 (if (boundp 'org-mode-user-contrib-lisp-path)
     (add-to-list 'load-path org-mode-user-contrib-lisp-path)
   (add-to-list 'load-path (expand-file-name "~/.emacs.d/src/org-mode/contrib/lisp")))

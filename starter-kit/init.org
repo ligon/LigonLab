@@ -57,9 +57,10 @@ First, we declare the package repositories to use.
 #+begin_src emacs-lisp
   (customize-set-variable 'package-archives
                           '(("gnu"       . "https://elpa.gnu.org/packages/")
+                            ("nongnu"       . "https://elpa.nongnu.org/nongnu/")
                             ;;("marmalade" . "https://marmalade-repo.org/packages/")
-                            ("melpa"     . "https://melpa.org/packages/")
-			    ("org"	 . "http://orgmode.org/elpa/")))
+                            ("melpa"     . "https://melpa.org/packages/")))
+			    ;("org"	 . "http://orgmode.org/elpa/")))
 #+end_src
 
 Then we initialize the package system, refresh the list of packages and install =use-package= if needed.
@@ -119,7 +120,11 @@ Set the load path to the directories from where I sometimes load things outside 
 #+begin_src emacs-lisp :noweb yes
   (use-package org
     :mode ("\\*.org$" . org-mode)
-    :ensure org-plus-contrib
+    :ensure org
+    :defer t)
+
+  (use-package org-contrib
+    :ensure org-contrib
     :defer t)
 #+end_src
 * Starter-kit init

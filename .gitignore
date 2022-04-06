@@ -232,3 +232,6 @@ starter-kit/.smex*
 starter-kit/smex*
 starter-kit/ac-comphist.dat
 *~
+elpy/rpc-venv/
+/starter-kit/elpy/rpc-venv/*
+/starter-kit/forge-database.sqlite
