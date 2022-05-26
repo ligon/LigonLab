@@ -1867,7 +1867,7 @@ Go forth and citate.
             (octave . nil)                                             
             (gnuplot . nil)                                            
             (ledger . nil)                                             
-            (asymptote . nil)                                          
+            (asymptote . t)                                          
             (latex . nil)))) 
 
   ; Do not prompt to confirm evaluation
