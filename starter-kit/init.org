@@ -13,7 +13,10 @@ First, a hook that reports how long and how many garbage collections the startup
                        gcs-done)))
 #+end_src
 
-Next, we wrap the whole init file in a block that sets =file-name-handler-alist= to =nil= to prevent any special-filename parsing of files loaded from the init file (e.g. remote files loaded through tramp, etc.). The =let= block gets closed in the [[Epilogue][Epilogue]].
+Next, we wrap the whole init file in a block that sets
+=file-name-handler-alist= to =nil= to prevent any special-filename
+parsing of files loaded from the init file (e.g. remote files loaded
+through tramp, etc.). The =let= block gets closed in the [[Epilogue][Epilogue]].
 
 #+begin_src emacs-lisp
   (let ((file-name-handler-alist nil))  ; this is open, and closed only in epilogue
@@ -30,8 +33,10 @@ We set =gc-cons-threshold= to its maximum value, to prevent any garbage collecti
 Emacs has its own [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Easy-Customization.html#Easy-Customization][Customization mechanism]] for easily customizing many parameters. To make it easier to manage, I keep the customized variables and faces in a separate file and load it from the main file. A lot of my custom settings are configured from this init file as well, but there are always some which I change by hand for added flexibility.
 
 #+begin_src emacs-lisp
-  (setq custom-file "~/.emacs.d/custom.el")
-  (load custom-file)
+  (let ((custom-file "~/.emacs.d/custom.el"))
+    (when (file-exists-p custom-file)
+      (load-file custom-file))
+  ) 
 #+end_src
 
 Here is the current contents of my [[https://github.com/zzamboni/dot-emacs/blob/master/custom.el][custom.el]] file.
@@ -40,7 +45,10 @@ Here is the current contents of my [[https://github.com/zzamboni/dot-emacs/blob/
 
 * Password management
 
-Password management using =auth-sources= and =pass= (I normally use 1Password, but I have not found a good command-line/Emacs interface for it, so I am using =pass= for now for some items I need to add to my Emacs config file).
+Password management using =auth-sources= and =pass= (I normally use
+1Password, but I have not found a good command-line/Emacs interface
+for it, so I am using =pass= for now for some items I need to add to
+my Emacs config file).
 
 #+begin_src emacs-lisp :tangle no
   (require 'auth-source)
@@ -50,7 +58,12 @@ Password management using =auth-sources= and =pass= (I normally use 1Password, b
 
 * Package management
 
-I use the [[https://www.masteringemacs.org/article/spotlight-use-package-a-declarative-configuration-tool][wonderful use-package]] to manage most of the packages in my installation (one exception is =org-mode=, see below). As this is not bundled yet with Emacs, the first thing we do is install it by hand. All other packages are then declaratively installed and configured with =use-package=. This makes it possible to fully bootstrap Emacs using only this config file, everything else is downloaded, installed and configured automatically.
+Use [[https://www.masteringemacs.org/article/spotlight-use-package-a-declarative-configuration-tool][use-package]] for most package management to manage most of the
+packages in my installation.  As this is not bundled yet with Emacs, the first thing we do
+is install it by hand. All other packages are then declaratively
+installed and configured with =use-package=. This makes it possible to
+fully bootstrap Emacs using only this config file, everything else is
+downloaded, installed and configured automatically.
 
 First, we declare the package repositories to use.
 
@@ -60,7 +73,7 @@ First, we declare the package repositories to use.
                             ("nongnu"       . "https://elpa.nongnu.org/nongnu/")
                             ;;("marmalade" . "https://marmalade-repo.org/packages/")
                             ("melpa"     . "https://melpa.org/packages/")))
-			    ;("org"	 . "http://orgmode.org/elpa/")))
+                            ("melpa-stable" . "https://stable.melpa.org/packages/")))
 #+end_src
 
 Then we initialize the package system, refresh the list of packages and install =use-package= if needed.
@@ -83,25 +96,40 @@ Finally, we load =use-package=.
 
 We set some configuration for =use-package=:
 
-- The =use-package-always-ensure= variable indicates that =use-package= should always try to install missing packages. For some libraries this is not appropriate, and in those cases you see the =:ensure nil= declaration as part of the =use-package= statement. This applies mainly to libraries which are installed as part of some other package (happens mostly with some libraries that come with org-mode).
+ - The =use-package-always-ensure= variable indicates that
+   =use-package= should always try to install missing packages. For
+   some libraries this is not appropriate, and in those cases you see
+   the =:ensure nil= declaration as part of the =use-package=
+   statement. This applies mainly to libraries which are installed as
+   part of some other package (happens mostly with some libraries that
+   come with org-mode).
 
   #+begin_src emacs-lisp
     (customize-set-variable 'use-package-always-ensure t)
   #+end_src
 
-- The =use-package-always-defer= sets =:defer true= as the default for all package declarations. This makes Emacs startup much faster by preventing packages from being loaded when Emacs starts, and only doing so when they are needed. Some packages don't work well with this, so you'll see some declarations when I explicitly set =:defer nil= to force the package to be loaded at startup, or =:defer n= to load the package, but only =n= seconds after startup.
+ - The =use-package-always-defer= sets =:defer true= as the default
+   for all package declarations. This makes Emacs startup much faster
+   by preventing packages from being loaded when Emacs starts, and
+   only doing so when they are needed. Some packages don't work well
+   with this, so you'll see some declarations when I explicitly set
+   =:defer nil= to force the package to be loaded at startup, or
+   =:defer n= to load the package, but only =n= seconds after startup.
 
   #+begin_src emacs-lisp
     (customize-set-variable 'use-package-always-defer t)
   #+end_src
 
-- The =use-package-verbose= variable enables verbose loading of packages, useful for debugging. I set/unset this according to need.
+ - The =use-package-verbose= variable enables verbose loading of
+   packages, useful for debugging. I set/unset this according to need.
 
   #+begin_src emacs-lisp
     (customize-set-variable 'use-package-verbose t)
   #+end_src
 
-This variable tells Emacs to prefer the =.el= file if it's newer, even if there is a corresponding =.elc= file. Also, use =auto-compile= to autocompile files as needed.
+This variable tells Emacs to prefer the =.el= file if it's newer, even
+if there is a corresponding =.elc= file. Also, use =auto-compile= to
+autocompile files as needed.
 
 #+begin_src emacs-lisp
   (customize-set-variable 'load-prefer-newer t)
@@ -110,7 +138,10 @@ This variable tells Emacs to prefer the =.el= file if it's newer, even if there 
     :config (auto-compile-on-load-mode))
 #+end_src
 
-Set the load path to the directories from where I sometimes load things outside the package system. Note that the path for =org-mode= (which I load from a checkout of its git repository) is set as part of its =use-package= declaration, so it doesn't appear here.
+Set the load path to the directories from where I sometimes load
+things outside the package system. Note that the path for =org-mode=
+(which I load from a checkout of its git repository) is set as part of
+its =use-package= declaration, so it doesn't appear here.
 
 #+begin_src emacs-lisp
   (add-to-list 'load-path "~/.emacs.d/src")
@@ -133,19 +164,6 @@ Set the load path to the directories from where I sometimes load things outside 
 (org-babel-load-file (expand-file-name "starter-kit.org" starter-kit-dir))
 #+end_src
 
-#+begin_src emacs-lisp :tangle no
-;;load the starter kit from the `after-init-hook' so all packages are loaded
-(add-hook 'after-init-hook
- `(lambda ()
-    ;; remember this directory
-    (setq starter-kit-dir (file-name-directory (or load-file-name (buffer-file-name))))
-    ;; only load org-mode later if we didn't load it just now
-    ,(unless (and (getenv "ORG_HOME")
-                  (file-directory-p (getenv "ORG_HOME")))
-       '(require 'org))
-    ;; load up the starter kit
-    (org-babel-load-file (expand-file-name "starter-kit.org" starter-kit-dir))))
-#+end_src
 
 * Epilogue
 
