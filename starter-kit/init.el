@@ -1,57 +1,57 @@
-;; Use a hook so the message doesn't get clobbered by other messages.
-(add-hook 'emacs-startup-hook
-          (lambda ()
-            (message "Emacs ready in %s with %d garbage collections."
-                     (format "%.2f seconds"
-                             (float-time
-                              (time-subtract after-init-time before-init-time)))
-                     gcs-done)))
+  ;; Use a hook so the message doesn't get clobbered by other messages.
+  (add-hook 'emacs-startup-hook
+            (lambda ()
+              (message "Emacs ready in %s with %d garbage collections."
+                       (format "%.2f seconds"
+                               (float-time
+                                (time-subtract after-init-time before-init-time)))
+                       gcs-done)))
 
-(let ((file-name-handler-alist nil))  ; this is open, and closed only in epilogue
+  (let ((file-name-handler-alist nil))  ; this is open, and closed only in epilogue
 
-(setq gc-cons-threshold most-positive-fixnum)
+  (setq gc-cons-threshold most-positive-fixnum)
 
-(let ((custom-file "~/.emacs.d/custom.el"))
-  (when (file-exists-p custom-file)
-    (load-file custom-file))
-)
+  ; (setq package-enable-at-startup nil)  # See https://github.com/radian-software/straight.el#features
 
-(customize-set-variable 'package-archives
-                        '(("gnu"       . "https://elpa.gnu.org/packages/")
-                          ("nongnu"       . "https://elpa.nongnu.org/nongnu/")
-                          ;;("marmalade" . "https://marmalade-repo.org/packages/")
-                          ("melpa"     . "https://melpa.org/packages/")
-                          ("melpa-stable" . "https://stable.melpa.org/packages/")))
+  (let ((custom-file "~/.emacs.d/custom.el"))
+    (when (file-exists-p custom-file)
+      (load-file custom-file))
+  )
 
-(package-initialize)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(when (not package-archive-contents)
-  (package-refresh-contents))
+  (require 'use-package)
 
-(when (not (package-installed-p 'use-package))
-  (package-install 'use-package))
+  (customize-set-variable 'use-package-verbose t)
 
-(require 'use-package)
+  (customize-set-variable 'use-package-always-defer t)
 
-(customize-set-variable 'use-package-always-ensure t)
+  (customize-set-variable 'load-prefer-newer t)
+  (use-package auto-compile
+    :defer nil
+    :config (auto-compile-on-load-mode))
 
-(customize-set-variable 'use-package-always-defer t)
-
-(customize-set-variable 'use-package-verbose t)
-
-(customize-set-variable 'load-prefer-newer t)
-(use-package auto-compile
-  :defer nil
-  :config (auto-compile-on-load-mode))
-
-(add-to-list 'load-path "~/.emacs.d/src")
+  (add-to-list 'load-path "~/.emacs.d/src")
 
 (use-package org
-  :mode ("\\*.org$" . org-mode)
-  :ensure org
-  :defer t)
+	     :demand t
+	     :load-path "~/.emacs.d/straight/build/org/"
+  	     :mode ("\\*.org$" . org-mode))
 
 (setq starter-kit-dir (expand-file-name "~/.emacs.d/"))
 (org-babel-load-file (expand-file-name "starter-kit.org" starter-kit-dir))
 
-)
+  )
+
+    (setq gc-cons-threshold (* 2 1000 1000))
