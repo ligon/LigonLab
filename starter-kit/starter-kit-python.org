@@ -38,8 +38,6 @@ Replace the Python mode that comes with Emacs by the Python mode
 supplied by the Python distribution itself.
 #+begin_src emacs-lisp  :tangle yes
 (use-package elpy
-  :ensure t
-  ;;:defer 2
   :config
   (progn
     ;; Use Flycheck instead of Flymake

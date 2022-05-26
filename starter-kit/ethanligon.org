@@ -1309,62 +1309,51 @@ If no task was clocking =bh/resume-clock= just stops the clock.
 
 * Weigley's AUCTeX
 #+begin_src emacs-lisp
-(use-package tex-site                   ; auctex
-  :load-path "site-lisp/auctex/"
-  :defines (latex-help-cmd-alist latex-help-file)
-  :mode ("\\.tex\\'" . TeX-latex-mode)
-  :init
-  (setq reftex-plug-into-AUCTeX t)
-  (setenv "PATH" (concat "/Library/TeX/texbin:"
-                         (getenv "PATH")))
-  (add-to-list 'exec-path "/Library/TeX/texbin")
-  :config
-  (defun latex-help-get-cmd-alist ()    ;corrected version:
-    "Scoop up the commands in the index of the latex info manual.
-   The values are saved in `latex-help-cmd-alist' for speed."
-    ;; mm, does it contain any cached entries
-    (if (not (assoc "\\begin" latex-help-cmd-alist))
-        (save-window-excursion
-          (setq latex-help-cmd-alist nil)
-          (Info-goto-node (concat latex-help-file "Command Index"))
-          (goto-char (point-max))
-          (while (re-search-backward "^\\* \\(.+\\): *\\(.+\\)\\." nil t)
-            (let ((key (buffer-substring (match-beginning 1) (match-end 1)))
-                  (value (buffer-substring (match-beginning 2)
-                                           (match-end 2))))
-              (add-to-list 'latex-help-cmd-alist (cons key value))))))
-    latex-help-cmd-alist)
+  (use-package auctex
+                 :load-path "straight/builds/auctex/"
+                   :defines (latex-help-cmd-alist latex-help-file)
+    :mode ("\\.tex\\'" . TeX-latex-mode)
+    :init
+    (setq reftex-plug-into-AUCTeX t)
+    (setenv "PATH" (concat "/Library/TeX/texbin:"
+                           (getenv "PATH")))
+    (add-to-list 'exec-path "/Library/TeX/texbin")
+    :config
+    (defun latex-help-get-cmd-alist ()    ;corrected version:
+      "Scoop up the commands in the index of the latex info manual.
+     The values are saved in `latex-help-cmd-alist' for speed."
+      ;; mm, does it contain any cached entries
+      (if (not (assoc "\\begin" latex-help-cmd-alist))
+          (save-window-excursion
+            (setq latex-help-cmd-alist nil)
+            (Info-goto-node (concat latex-help-file "Command Index"))
+            (goto-char (point-max))
+            (while (re-search-backward "^\\* \\(.+\\): *\\(.+\\)\\." nil t)
+              (let ((key (buffer-substring (match-beginning 1) (match-end 1)))
+                    (value (buffer-substring (match-beginning 2)
+                                             (match-end 2))))
+                (add-to-list 'latex-help-cmd-alist (cons key value))))))
+      latex-help-cmd-alist)
 
-  (use-package ebib
-    :load-path "site-lisp/ebib"
-    :preface
-    (use-package parsebib :load-path "site-lisp/parsebib")))
+    (use-package ebib
+      :load-path "site-lisp/ebib"
+      :preface
+      (use-package parsebib :load-path "site-lisp/parsebib")))
 #+end_src
 
-#+results:
-: ((\.hva\' . latex-mode) (\.drv\' . latex-mode) (\.tex\' . TeX-latex-mode) (\.gpg\(~\|\.~[0-9]+~\)?\' nil epa-file) (\.m$ . octave-mode) (\.dz\' nil jka-compr) (\.xz\' nil jka-compr) (\.lzma\' nil jka-compr) (\.lz\' nil jka-compr) (\.g?z\' nil jka-compr) (\.bz2\' nil jka-compr) (\.Z\' nil jka-compr) (\*.org$ . org-mode) (/git-rebase-todo\' . git-rebase-mode) (\.at\' . autotest-mode) (\.gpg\(~\|\.~[0-9]+~\)?\' nil epa-file) (\.\(?:3fr\|a\(?:r[tw]\|vs\)\|bmp[23]?\|c\(?:als?\|myka?\|r[2w]\|u[rt]\)\|d\(?:c[mrx]\|ds\|jvu\|ng\|px\)\|exr\|f\(?:ax\|its\)\|gif\(?:87\)?\|hrz\|ic\(?:on\|[bo]\)\|j\(?:2c\|ng\|p\(?:eg\|[2cg]\)\)\|k\(?:25\|dc\)\|m\(?:iff\|ng\|rw\|s\(?:l\|vg\)\|tv\)\|nef\|o\(?:rf\|tb\)\|p\(?:bm\|c\(?:ds\|[dltx]\)\|db\|ef\|gm\|i\(?:ct\|x\)\|jpeg\|n\(?:g\(?:24\|32\|8\)\|[gm]\)\|pm\|sd\|tif\|wp\)\|r\(?:a[fs]\|gb[ao]?\|l[ae]\)\|s\(?:c[rt]\|fw\|gi\|r[2f]\|un\|vgz?\)\|t\(?:ga\|i\(?:ff\(?:64\)?\|le\|m\)\|tf\)\|uyvy\|v\(?:da\|i\(?:car\|d\|ff\)\|st\)\|w\(?:bmp\|pg\)\|x\(?:3f\|bm\|cf\|pm\|wd\|[cv]\)\|y\(?:cbcra?\|uv\)\)\' . image-mode) (\.elc\' . elisp-byte-code-mode) (\.dz\' nil jka-compr) (\.xz\' nil jka-compr) (\.lzma\' nil jka-compr) (\.lz\' nil jka-compr) (\.g?z\' nil jka-compr) (\.bz2\' nil jka-compr) (\.Z\' nil jka-compr) (\.vr[hi]?\' . vera-mode) (\(?:\.\(?:rbw?\|ru\|rake\|thor\|jbuilder\|rabl\|gemspec\|podspec\)\|/\(?:Gem\|Rake\|Cap\|Thor\|Puppet\|Berks\|Vagrant\|Guard\|Pod\)file\)\' . ruby-mode) (\.re?st\' . rst-mode) (\.pyw?\' . python-mode) (\.scss\' . scss-mode) (\.awk\' . awk-mode) (\.\(u?lpc\|pike\|pmod\(\.in\)?\)\' . pike-mode) (\.idl\' . idl-mode) (\.java\' . java-mode) (\.m\' . objc-mode) (\.ii\' . c++-mode) (\.i\' . c-mode) (\.lex\' . c-mode) (\.y\(acc\)?\' . c-mode) (\.[ch]\' . c-mode) (\.\(CC?\|HH?\)\' . c++-mode) (\.[ch]\(pp\|xx\|\+\+\)\' . c++-mode) (\.\(cc\|hh\)\' . c++-mode) (\.\(bat\|cmd\)\' . bat-mode) (\.[sx]?html?\(\.[a-zA-Z_]+\)?\' . html-mode) (\.svgz?\' . image-mode) (\.svgz?\' . xml-mode) (\.x[bp]m\' . image-mode) (\.x[bp]m\' . c-mode) (\.p[bpgn]m\' . image-mode) (\.tiff?\' . image-mode) (\.gif\' . image-mode) (\.png\' . image-mode) (\.jpe?g\' . image-mode) (\.te?xt\' . text-mode) (\.[tT]e[xX]\' . tex-mode) (\.ins\' . tex-mode) (\.ltx\' . latex-mode) (\.dtx\' . doctex-mode) (\.org\' . org-mode) (\.el\' . emacs-lisp-mode) (Project\.ede\' . emacs-lisp-mode) (\.\(scm\|stk\|ss\|sch\)\' . scheme-mode) (\.l\' . lisp-mode) (\.li?sp\' . lisp-mode) (\.[fF]\' . fortran-mode) (\.for\' . fortran-mode) (\.p\' . pascal-mode) (\.pas\' . pascal-mode) (\.\(dpr\|DPR\)\' . delphi-mode) (\.ad[abs]\' . ada-mode) (\.ad[bs].dg\' . ada-mode) (\.\([pP]\([Llm]\|erl\|od\)\|al\)\' . perl-mode) (Imakefile\' . makefile-imake-mode) (Makeppfile\(?:\.mk\)?\' . makefile-makepp-mode) (\.makepp\' . makefile-makepp-mode) (\.mk\' . makefile-gmake-mode) (\.make\' . makefile-gmake-mode) ([Mm]akefile\' . makefile-gmake-mode) (\.am\' . makefile-automake-mode) (\.texinfo\' . texinfo-mode) (\.te?xi\' . texinfo-mode) (\.[sS]\' . asm-mode) (\.asm\' . asm-mode) (\.css\' . css-mode) (\.mixal\' . mixal-mode) (\.gcov\' . compilation-mode) (/\.[a-z0-9-]*gdbinit . gdb-script-mode) (-gdb\.gdb . gdb-script-mode) ([cC]hange\.?[lL]og?\' . change-log-mode) ([cC]hange[lL]og[-.][0-9]+\' . change-log-mode) (\$CHANGE_LOG\$\.TXT . change-log-mode) (\.scm\.[0-9]*\' . scheme-mode) (\.[ckz]?sh\'\|\.shar\'\|/\.z?profile\' . sh-mode) (\.bash\' . sh-mode) (\(/\|\`\)\.\(bash_\(profile\|history\|log\(in\|out\)\)\|z?log\(in\|out\)\)\' . sh-mode) (\(/\|\`\)\.\(shrc\|[kz]shrc\|bashrc\|t?cshrc\|esrc\)\' . sh-mode) (\(/\|\`\)\.\([kz]shenv\|xinitrc\|startxrc\|xsession\)\' . sh-mode) (\.m?spec\' . sh-mode) (\.m[mes]\' . nroff-mode) (\.man\' . nroff-mode) (\.sty\' . latex-mode) (\.cl[so]\' . latex-mode) (\.bbl\' . latex-mode) (\.bib\' . bibtex-mode) (\.bst\' . bibtex-style-mode) (\.sql\' . sql-mode) (\.m[4c]\' . m4-mode) (\.mf\' . metafont-mode) (\.mp\' . metapost-mode) (\.vhdl?\' . vhdl-mode) (\.article\' . text-mode) (\.letter\' . text-mode) (\.i?tcl\' . tcl-mode) (\.exp\' . tcl-mode) (\.itk\' . tcl-mode) (\.icn\' . icon-mode) (\.sim\' . simula-mode) (\.mss\' . scribe-mode) (\.f9[05]\' . f90-mode) (\.f0[38]\' . f90-mode) (\.indent\.pro\' . fundamental-mode) (\.\(pro\|PRO\)\' . idlwave-mode) (\.srt\' . srecode-template-mode) (\.prolog\' . prolog-mode) (\.tar\' . tar-mode) (\.\(arc\|zip\|lzh\|lha\|zoo\|[jew]ar\|xpi\|rar\|7z\|ARC\|ZIP\|LZH\|LHA\|ZOO\|[JEW]AR\|XPI\|RAR\|7Z\)\' . archive-mode) (\.oxt\' . archive-mode) (\.\(deb\|[oi]pk\)\' . archive-mode) (\`/tmp/Re . text-mode) (/Message[0-9]*\' . text-mode) (\`/tmp/fol/ . text-mode) (\.oak\' . scheme-mode) (\.sgml?\' . sgml-mode) (\.x[ms]l\' . xml-mode) (\.dbk\' . xml-mode) (\.dtd\' . sgml-mode) (\.ds\(ss\)?l\' . dsssl-mode) (\.jsm?\' . javascript-mode) (\.json\' . javascript-mode) (\.[ds]?vh?\' . verilog-mode) (\.by\' . bovine-grammar-mode) (\.wy\' . wisent-grammar-mode) ([:/\]\..*\(emacs\|gnus\|viper\)\' . emacs-lisp-mode) (\`\..*emacs\' . emacs-lisp-mode) ([:/]_emacs\' . emacs-lisp-mode) (/crontab\.X*[0-9]+\' . shell-script-mode) (\.ml\' . lisp-mode) (\.ld[si]?\' . ld-script-mode) (ld\.?script\' . ld-script-mode) (\.xs\' . c-mode) (\.x[abdsru]?[cnw]?\' . ld-script-mode) (\.zone\' . dns-mode) (\.soa\' . dns-mode) (\.asd\' . lisp-mode) (\.\(asn\|mib\|smi\)\' . snmp-mode) (\.\(as\|mi\|sm\)2\' . snmpv2-mode) (\.\(diffs?\|patch\|rej\)\' . diff-mode) (\.\(dif\|pat\)\' . diff-mode) (\.[eE]?[pP][sS]\' . ps-mode) (\.\(?:PDF\|DVI\|OD[FGPST]\|DOCX?\|XLSX?\|PPTX?\|pdf\|djvu\|dvi\|od[fgpst]\|docx?\|xlsx?\|pptx?\)\' . doc-view-mode-maybe) (configure\.\(ac\|in\)\' . autoconf-mode) (\.s\(v\|iv\|ieve\)\' . sieve-mode) (BROWSE\' . ebrowse-tree-mode) (\.ebrowse\' . ebrowse-tree-mode) (#\*mail\* . mail-mode) (\.g\' . antlr-mode) (\.mod\' . m2-mode) (\.ses\' . ses-mode) (\.docbook\' . sgml-mode) (\.com\' . dcl-mode) (/config\.\(?:bat\|log\)\' . fundamental-mode) (\.\(?:[iI][nN][iI]\|[lL][sS][tT]\|[rR][eE][gG]\|[sS][yY][sS]\)\' . conf-mode) (\.\(?:desktop\|la\)\' . conf-unix-mode) (\.ppd\' . conf-ppd-mode) (java.+\.conf\' . conf-javaprop-mode) (\.properties\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-javaprop-mode) (\`/etc/\(?:DIR_COLORS\|ethers\|.?fstab\|.*hosts\|lesskey\|login\.?de\(?:fs\|vperm\)\|magic\|mtab\|pam\.d/.*\|permissions\(?:\.d/.+\)?\|protocols\|rpc\|services\)\' . conf-space-mode) (\`/etc/\(?:acpid?/.+\|aliases\(?:\.d/.+\)?\|default/.+\|group-?\|hosts\..+\|inittab\|ksysguarddrc\|opera6rc\|passwd-?\|shadow-?\|sysconfig/.+\)\' . conf-mode) ([cC]hange[lL]og[-.][-0-9a-z]+\' . change-log-mode) (/\.?\(?:gitconfig\|gnokiirc\|hgrc\|kde.*rc\|mime\.types\|wgetrc\)\' . conf-mode) (/\.\(?:enigma\|gltron\|gtk\|hxplayer\|net\|neverball\|qt/.+\|realplayer\|scummvm\|sversion\|sylpheed/.+\|xmp\)rc\' . conf-mode) (/\.\(?:gdbtkinit\|grip\|orbital/.+txt\|rhosts\|tuxracer/options\)\' . conf-mode) (/\.?X\(?:default\|resource\|re\)s\> . conf-xdefaults-mode) (/X11.+app-defaults/\|\.ad\' . conf-xdefaults-mode) (/X11.+locale/.+/Compose\' . conf-colon-mode) (/X11.+locale/compose\.dir\' . conf-javaprop-mode) (\.~?[0-9]+\.[0-9][-.0-9]*~?\' nil t) (\.\(?:orig\|in\|[bB][aA][kK]\)\' nil t) ([/.]c\(?:on\)?f\(?:i?g\)?\(?:\.[a-zA-Z0-9._-]+\)?\' . conf-mode-maybe) (\.[1-9]\' . nroff-mode) (\.tgz\' . tar-mode) (\.tbz2?\' . tar-mode) (\.txz\' . tar-mode) (\.tgz\' . tar-mode) (\.tbz2?\' . tar-mode) (\.txz\' . tar-mode))
-
-* COMMENT AUCTeX
-Setup for AUC TeX
+* Some TeX Settings
 #+begin_src emacs-lisp
-;(starter-kit-install-if-needed 'auctex)
-(use-package auctex
-  :defer t
-  :ensure t)
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq TeX-global-PDF-mode t)
+  (setq-default TeX-master t)
 
-;(require 'tex-site)
-;;(load "preview-latex.el" nil t t)
-(setq TeX-auto-save t)
-(setq TeX-parse-self t)
-(setq TeX-global-PDF-mode t)
-(setq-default TeX-master t)
-
-(eval-after-load "tex" 
-  '(setcdr (assoc "LaTeX" TeX-command-list)
-          '("%`%l%(mode) -shell-escape%' %t"
-          TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX")
+  (eval-after-load "tex" 
+    '(setcdr (assoc "LaTeX" TeX-command-list)
+            '("%`%l%(mode) -shell-escape%' %t"
+            TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX")
+      )
     )
-  )
 #+end_src
 * PDF-Tools
 #+BEGIN_SRC emacs-lisp
@@ -1550,10 +1539,34 @@ print "Hello, world!"
 #+BEGIN_SRC emacs-lisp
 (org-add-link-type "tel" 'phone)
 #+END_SRC
+* Add copilot
+#+begin_src emacs-lisp
+(use-package copilot
+  :straight (:host github :repo "zerolfx/copilot.el" :files ("dist" "*.el"))
+  :ensure t)
+;; you can utilize :map :hook and :config to customize copilot
+
+(add-hook 'prog-mode-hook 'copilot-mode)
+
+; complete by copilot first, then company-mode
+(defun my-tab ()
+  (interactive)
+  (or (copilot-accept-completion)
+      (company-indent-or-complete-common nil)))
+
+; modify company-mode behaviors
+(with-eval-after-load 'company
+  ;; disable inline previews
+  (delq 'company-preview-if-just-one-frontend company-frontends)
+
+  (define-key company-mode-map (kbd "<tab>") 'my-tab)
+  (define-key company-mode-map (kbd "TAB") 'my-tab)
+  (define-key company-active-map (kbd "<tab>") 'my-tab)
+  (define-key company-active-map (kbd "TAB") 'my-tab))
+#+end_src
 * Emacs speaks statistics (ess)
 #+BEGIN_SRC emacs-lisp
 (use-package ess
-  :ensure t
   :init (require 'ess-site))
 #+END_SRC
 
@@ -1562,22 +1575,45 @@ print "Hello, world!"
 
 * John Kitchin's scimax 
 
-This code just sets up paths to find scimax bits
-#+BEGIN_SRC emacs-lisp 
-(setq scimax-dir (expand-file-name "~/.emacs.d/scimax/"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/scimax"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/scimax/org-ref"))
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/scimax/ox-ipynb/"))
-#+END_SRC
+# Install scimax using straight
+#+begin_src emacs-lisp
+  (straight-use-package 'gitter)
+  (straight-use-package 'emacsql-sqlite)
+  (straight-use-package '(scimax :type git
+                                          :host github
+                                          :repo "jkitchin/scimax"))
+
+  (set-variable 'scimax-dir (expand-file-name "~/.emacs.d/straight/build/scimax/"))
+  (add-to-list 'load-path scimax-dir)
+
+  (straight-use-package '(ox-ipynb
+                          :type git
+                          :host github
+                          :repo "jkitchin/ox-ipynb"))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package org-ref
+    :straight (org-ref :host github :repo "jkitchin/org-ref")
+:config
+(require 'doi-utils)
+(require 'org-ref-wos)
+(require 'org-ref-pubmed)
+(require 'org-ref-arxiv)
+(require 'org-ref-bibtex)
+(require 'org-ref-pdf)
+(require 'org-ref-url-utils)
+(require 'org-ref-helm)
+(require 'org-ref-isbn))
+#+end_src
 
 #+BEGIN_SRC emacs-lisp 
-(use-package lispy)
-(require 'lispy)
-(use-package org-ref)
-(require 's)
-(require 'ox-ipynb)
-(require 'scimax-org)
-;(require 'scimax)
+  (use-package lispy)
+  (require 'lispy)
+  (require 's)
+  (require 'f)
+  (require 'scimax-org)
+  (require 'scimax)
 #+END_SRC
 
 #+results:
@@ -1608,7 +1644,7 @@ Following code-block sets markers used by async export.
 (require 'ox-html)
 (require 'ox-ascii)
 (require 'ox-odt)
-;(require 'ox-ipynb)
+(require 'ox-ipynb)
 (org-defkey org-mode-map (kbd "C-c C-e") 'org-export-dispatch)
 (setq org-export-backends (quote (ascii beamer html icalendar latex ipynb md koma-letter)))
 (setq org-export-initial-scope (quote subtree))
@@ -1920,3 +1956,4 @@ Note that with the introduction of ipython 5.* there are problems using ipython 
 #+begin_src emacs-lisp
 (display-time)
 #+end_src
+
