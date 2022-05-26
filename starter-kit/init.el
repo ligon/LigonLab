@@ -11,16 +11,16 @@
 
   (setq gc-cons-threshold most-positive-fixnum)
 
-  (setq custom-file "~/.emacs.d/custom.el")
   (let ((custom-file "~/.emacs.d/custom.el"))
     (when (file-exists-p custom-file)
       (load-file custom-file))
-  ) 
+  )
 
   (customize-set-variable 'package-archives
                           '(("gnu"       . "https://elpa.gnu.org/packages/")
+                            ("nongnu"       . "https://elpa.nongnu.org/nongnu/")
                             ;;("marmalade" . "https://marmalade-repo.org/packages/")
-                            ("melpa"     . "https://melpa.org/packages/")
+                            ("melpa"     . "https://melpa.org/packages/")))
                             ("melpa-stable" . "https://stable.melpa.org/packages/")))
 
   (package-initialize)
@@ -55,5 +55,3 @@
 (org-babel-load-file (expand-file-name "starter-kit.org" starter-kit-dir))
 
   )
-
-(setq gc-cons-threshold (* 2 1000 1000))

@@ -153,10 +153,6 @@ its =use-package= declaration, so it doesn't appear here.
     :mode ("\\*.org$" . org-mode)
     :ensure org
     :defer t)
-
-  (use-package org-contrib
-    :ensure org-contrib
-    :defer t)
 #+end_src
 * Starter-kit init
 #+begin_src emacs-lisp
