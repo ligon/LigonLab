@@ -6,7 +6,7 @@
  #+end_src
 
  #+RESULTS:
- : Loaded /home/ethanligon/.emacs.d/starter-kit-org.el
+ : Loaded /home/ligon/.emacs.d/starter-kit-org.el
 
 * Load "edit-server" to allow one to call emacs from chromium
 Minimal, from chrome-extension://ljobjlafonikaiipfkggjbhkghgicgoh/fancy-settings/source/index.html
@@ -128,7 +128,7 @@ More complicated?
 #+END_SRC
 * Dropbox
 See also secret codes presently in customize.el.
-#+begin_src emacs-lisp :tangle nil
+#+begin_src emacs-lisp :tangle no
 (use-package dropbox) 
 #+end_src
 
@@ -295,23 +295,9 @@ keeps the data in plain text as short as possible.
 :END:
 [2011-09-26 Mon 04:57]
 
-Emacs temporarily saves your buffer in an autosave file while you are
-editing your org buffer and a sufficient number of changes have
-accumulated.  If you have decrypted subtrees in your buffer these will
-be written to disk in plain text which possibly leaks sensitive information.
-To combat this org-mode now asks if you want to disable the autosave 
-functionality in this buffer.
-
-Personally I really like the autosave feature.  99% of the time my encrypted
-entries are perfectly safe to write to the autosave file since they are
-still encrypted.  I tend to decrypt an entry, read the details for what
-I need to look up and then immediately save the file again with =C-x C-s=
-which re-encrypts the entry immediately.  This pretty much guarantees that 
-my autosave files never have decrypted data stored in them.
-
-I disable the default org crypt auto-save setting as follows:
+Encrypt :crypt: entries before auto-save.
 #+begin_src emacs-lisp
-(setq org-crypt-disable-auto-save nil)
+(setq org-crypt-disable-auto-save 'encrypt)
 #+end_src
 
 #+RESULTS:
@@ -1393,7 +1379,7 @@ Setup for AUC TeX
 
 * Org collector (for tables of properties)
 #+BEGIN_SRC emacs-lisp
-(require 'org-collector)
+;(require 'org-collector)  # Where does this live now that contrib is gone?
 #+END_SRC
 
 * Setup for gnus
@@ -1519,7 +1505,7 @@ gnus (per http://www.emacswiki.org/emacs/GnusGmail#toc11):
 
 
 * Stuff to require from org/contrib
-#+begin_src emacs-lisp :results silent
+#+begin_src emacs-lisp :results silent :tangle no
 (if (boundp 'org-mode-user-contrib-lisp-path)
     (add-to-list 'load-path org-mode-user-contrib-lisp-path)
   (add-to-list 'load-path (expand-file-name "~/.emacs.d/src/org-mode/contrib/lisp")))
@@ -1687,14 +1673,20 @@ Following code-block sets markers used by async export.
       ("" "textcomp" t)
       ("" "marvosym" t)
       ("" "wasysym" t)
-      ("" "hyperref" nil)
+      ("" "hyperref" nil))))
+ #+END_SRC
+
+ #+BEGIN_SRC emacs-lisp 
+ (setq org-latex-packages-alist
+    (quote
+     (("" "booktabs" nil)
+      ("authordate-trad,backend=biber,natbib" "biblatex-chicago" nil))))
+#+end_src
+
       "\\tolerance=1000"
-      ("authordate-trad,backend=biber,natbib" "biblatex-chicago" nil)
       "\\addbibresource{main.bib}"
       "\\addbibresource{ligon.bib}"
       "\\renewcommand{\\refname}{}"
-      ("" "booktabs" nil))))
- #+END_SRC
 
 
 ** Make links export in LaTeX to \refs.
@@ -1716,9 +1708,10 @@ Following code-block sets markers used by async export.
  #+BEGIN_example 
  $pdflatex = 'pdflatex --shell-escape -interaction=nonstopmode %O %S -file-line-error -synctex=1';
  #+END_example
+ With pdflatex taking the appropriate options (especially
+ --shell-escape, since otherwise pdflatex can't deal with the minted
+ package), building a pdf from latex is as simple as:
  #+begin_src emacs-lisp
- ;;(setq org-latex-to-pdf-process '("LC_ALL=C PDFLATEX=\"pdflatex –shell-escape\" texi2dvi -p %f"))
- ;; (setq org-latex-to-pdf-process '("LC_ALL=C PDFLATEX=\"pdflatex –shell-escape\" latexmk -pdf -f %f"))
  (setq org-latex-pdf-process (list "latexmk -f -pdf %f"))
  #+end_src
 
@@ -1726,7 +1719,7 @@ Following code-block sets markers used by async export.
  #+begin_src emacs-lisp 
    (require 'ox-latex)
    (setq org-latex-listings 'minted)
-   (add-to-list 'org-latex-packages-alist '("" "minted"))
+   (add-to-list 'org-latex-packages-alist '("" "minted" nil))
    (setq org-latex-minted-options '(("fontsize" "\\footnotesize")
                                     ("frame" "lines")
                                     ("baselinestretch" "1")))
@@ -1882,8 +1875,8 @@ Go forth and citate.
             (octave . nil)                                             
             (gnuplot . nil)                                            
             (ledger . nil)                                             
-            (asymptote . nil)                                          
-            (latex . nil))))                                           
+            (asymptote . t)                                          
+            (latex . nil)))) 
 
   ; Do not prompt to confirm evaluation
   ; This may be dangerous - make sure you understand the consequences
@@ -1931,3 +1924,7 @@ Note that with the introduction of ipython 5.* there are problems using ipython 
 (add-hook 'python-mode-hook
   (lambda () (setq python-indent-offset 4)))
 #+END_SRC
+* Display time
+#+begin_src emacs-lisp
+(display-time)
+#+end_src

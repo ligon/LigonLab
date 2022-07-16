@@ -56,11 +56,11 @@ First, we declare the package repositories to use.
 
 #+begin_src emacs-lisp
   (customize-set-variable 'package-archives
-                          '(;;("gnu"       . "https://elpa.gnu.org/packages/")
+                          '(("gnu"       . "https://elpa.gnu.org/packages/")
                             ;;("marmalade" . "https://marmalade-repo.org/packages/")
                             ;;("melpa"     . "https://melpa.org/packages/")
-                            ("melpa-stable" . "https://stable.melpa.org/packages/")
-			    ("org"	 . "http://orgmode.org/elpa/")))
+                            ("melpa-stable" . "https://stable.melpa.org/packages/")))
+			    ;;("org"	 . "http://orgmode.org/elpa/")))
 #+end_src
 
 Then we initialize the package system, refresh the list of packages and install =use-package= if needed.
