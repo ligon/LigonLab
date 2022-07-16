@@ -190,8 +190,8 @@ How to fork a file from LigonLab to your personal github fork:
     (quote org-babel-load-languages)                                   
     (quote ((emacs-lisp . t)                                           
             (python . t)                                               
-            ;(shell . t) ; If an error, trying commenting this line...  
-            (sh . t)   ; ...and uncommenting this one.                
+            (shell . t) ; If an error, trying commenting this line...  
+            ;(sh . t)   ; ...and uncommenting this one.                
             (org . t)                                                  
             (dot . nil)                                                
             (ditaa . nil)                                              
@@ -222,8 +222,11 @@ How to fork a file from LigonLab to your personal github fork:
 
    #+name: hello  
    #+begin_src python :results output  
-   print("Hell%c world!" % 'a')
+print("Hell%c world!" % 'a')
    #+end_src
+
+   #+results: hello
+   : Hella world!
 
    Success should look like a line reading "#+RESULTS: hello" and a greeting.
 
