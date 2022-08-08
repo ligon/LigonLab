@@ -1613,7 +1613,7 @@ print "Hello, world!"
   (require 's)
   (require 'f)
   (require 'scimax-org)
-  (require 'scimax)
+  ;(require 'scimax)
 #+END_SRC
 
 #+results:
