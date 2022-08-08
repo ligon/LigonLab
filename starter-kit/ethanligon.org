@@ -371,8 +371,11 @@ Encrypt :crypt: entries before auto-save.
    (quote
     (("t" "todo" entry (file org-default-notes-file)
       "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-     ("T" "Tara" entry (file "~/Help/in.org")
+     ("F" "Factotum" entry (file "~/Help/in.org")
       "* TASKED %?\n" :clock-in t :clock-resume t)
+     ("L" "UCB Letter" entry (file org-default-notes-file)
+      "* Letter %^{PROMPT}                                               :ignore:\n:PROPERTIES:\n:EXPORT_TITLE:\n:END:\n** Preamble                                                        :noexport\n#+DATE: \\today\n#+AUTHOR: \n#+LCO: uc_berkeley  \n#+SUBJECT: \n#+PLACE:\n#+OPTIONS: after-closing-order:(my_after_signature ps cc encl)\n#+options: ':t backaddress:t subject:centered\n** To-address                                                            :to:\n** To whom it may concern:\n** Sincerely,                                                :closing:\n#+BEGIN_EXPORT latex\n \\includegraphics[height=2cm]{/home/ligon/texmf/signature.pdf}\n #+END_EXPORT\n\nEthan Ligon\n** some arbitrary LaTeX code                             :my_after_signature:\n#+BEGIN_EXPORT latex\n % this special heading was added dynamically.\n#+END_EXPORT\n** PS                                                                    :ps:\n** CC                                                                    :cc:\n** ENCL                                                                :encl:\n** some more arbitrary LaTeX code                              :after_letter:\n#+BEGIN_EXPORT latex\n % here we can place random LaTeX code, e.g. including PDFs via the pdfpages package.\n #+END_EXPORT"
+      :clock-in t :clock-resume t)
      ("b" "BibTeX" entry (file "~/bibtex/main.bib")
       "")
      ("r" "respond" entry (file org-default-notes-file)
@@ -1768,15 +1771,20 @@ Following code-block sets markers used by async export.
   '(progn
      (add-to-list 'org-latex-classes
                   '("ucb-letter"
-                    "\\documentclass\{scrlttr2\}
+                    "\\documentclass\[%
+      fromemail=false,
+      fromname=false
+     \]\{scrlttr2\}
      \\usepackage[english]{babel}
-     \\setkomavar{frombank}{(1234)\\,567\\,890}
      \[DEFAULT-PACKAGES]
      \[PACKAGES]
      \[EXTRA]"))
 
      (setq org-koma-letter-default-class "ucb-letter")))
 #+END_SRC
+
+#+results:
+: ucb-letter
 
 ** Allow :ignore: tag to ignore headlines
 See https://emacs.stackexchange.com/questions/9492/is-it-possible-to-export-content-of-subtrees-without-their-headings
