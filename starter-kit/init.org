@@ -32,10 +32,10 @@ value in the [[Epilogue][Epilogue]].
 #+end_src
 
 Set the following for =straight.el= to prevent conflicts with
-=package.el=.
+=package.el=.  *But put into early-init.el*
 
-#+begin_src emacs-lisp
-  ; (setq package-enable-at-startup nil)  # See https://github.com/radian-software/straight.el#features
+#+begin_src emacs-lisp :tangle early-init.el
+  (setq package-enable-at-startup nil)  ; See https://github.com/radian-software/straight.el#features
 #+end_src
 
 * Customized variables
@@ -75,9 +75,15 @@ Bootstrap =straight.el=...
 ** Use-package
 Finally, we load =use-package=.
 
-#+begin_src emacs-lisp 
+#+begin_src emacs-lisp
+  (straight-use-package 'use-package)
   (require 'use-package)
+  ;; Configure use-package to use straight.el by default
+  (use-package straight
+             :custom (straight-use-package-by-default t))
 #+end_src
+
+#+RESULTS:
 
 The =use-package-verbose= variable enables verbose loading of
 packages, useful for debugging. I set/unset this according to need.
@@ -107,8 +113,8 @@ autocompile files as needed.
 
 #+begin_src emacs-lisp 
   (customize-set-variable 'load-prefer-newer t)
+
   (use-package auto-compile
-    :defer nil
     :config (auto-compile-on-load-mode))
 #+end_src
 
@@ -116,15 +122,17 @@ Set the load path to the directories from where I sometimes load
 things outside the package system. 
 
 #+begin_src emacs-lisp 
-  (add-to-list 'load-path "~/.emacs.d/src")
+  ;(add-to-list 'load-path "~/.emacs.d/src")
 #+end_src
 
 * Org-mode setup
 #+begin_src emacs-lisp :noweb yes 
-(use-package org
-	     :demand t
-	     :load-path "~/.emacs.d/straight/build/org/"
-  	     :mode ("\\*.org$" . org-mode))
+  (use-package org
+               :demand t
+               :load-path "~/.emacs.d/straight/build/org/"
+               :mode ("\\*.org$" . org-mode)
+               :requires ox-extra)
+  (straight-use-package 'f)
 #+end_src
 
 * Starter-kit init

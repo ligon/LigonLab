@@ -1290,7 +1290,7 @@ If no task was clocking =bh/resume-clock= just stops the clock.
         (bookmark-set "org-refile-last-stored")))
     (message "Refiled to %s" journal)))
 
-(defun my/org-agenda-refile-to-journal ()
+
   "Refile the item at point to journal."
   (interactive)
   (let* ((marker (or (org-get-at-bol 'org-hd-marker)
@@ -1595,19 +1595,22 @@ print "Hello, world!"
                           :repo "jkitchin/ox-ipynb"))
 #+end_src
 
-#+begin_src emacs-lisp
-(use-package org-ref
-    :straight (org-ref :host github :repo "jkitchin/org-ref")
-:config
-(require 'doi-utils)
-(require 'org-ref-wos)
-(require 'org-ref-pubmed)
-(require 'org-ref-arxiv)
-(require 'org-ref-bibtex)
-(require 'org-ref-pdf)
-(require 'org-ref-url-utils)
-(require 'org-ref-helm)
-(require 'org-ref-isbn))
+
+Shut down org-ref
+#+begin_src emacs-lisp :tangle no
+  (use-package helm-bibtex)
+  (use-package org-ref
+      :straight (org-ref :host github :repo "jkitchin/org-ref")
+      :config
+      (require 'doi-utils)
+      (require 'org-ref-wos)
+      (require 'org-ref-pubmed)
+      (require 'org-ref-arxiv)
+      (require 'org-ref-bibtex)
+      (require 'org-ref-pdf)
+      (require 'org-ref-url-utils)
+      (require 'org-ref-helm)
+      (require 'org-ref-isbn))
 #+end_src
 
 #+BEGIN_SRC emacs-lisp 
@@ -1615,7 +1618,16 @@ print "Hello, world!"
   (require 'lispy)
   (require 's)
   (require 'f)
-  (require 'scimax-org)
+  (use-package scimax-org-radio-checkbox
+    :straight (scimax-org-radio-checkbox :host github :repo "jkitchin/scimax"))
+  (use-package scimax-org-latex
+    :straight (scimax-org-latex :host github :repo "jkitchin/scimax"))
+  (use-package scimax-org-images
+    :straight (scimax-org-images :host github :repo "jkitchin/scimax"))
+  (use-package scimax-org
+    :straight (scimax-org :host github :repo "jkitchin/scimax"))
+    
+  ;(require 'scimax-org)
   ;(require 'scimax)
 #+END_SRC
 
@@ -1789,8 +1801,14 @@ Following code-block sets markers used by async export.
 ** Allow :ignore: tag to ignore headlines
 See https://emacs.stackexchange.com/questions/9492/is-it-possible-to-export-content-of-subtrees-without-their-headings
 #+BEGIN_SRC emacs-lisp
-(require 'ox-extra)
-(ox-extras-activate '(ignore-headlines))
+  (straight-use-package '(ox-extra :host github
+                                   :repo "emacsmirror/org-contrib"
+                                     :branch "master"))
+  (straight-use-package '(ob-asymptote :host github
+                                   :repo "emacsmirror/org-contrib"
+                                     :branch "master"))
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines))
 #+END_SRC
 
 #+results:
@@ -1827,62 +1845,42 @@ Set this instead in machine-specific file
 : ((auto-mode . emacs) (\.mm\' . default) (\.x?html?\' . google-chrome %s) (\.pdf\' . garcon-url-handler %s))
 
 
+* ob-ipython
 
-* Org-ref (from jkitchin)
+* Org-cite & citar
 
-You should set these variables. Here is an example of how mine are set in an init.el file.
-
-#+BEGIN_SRC emacs-lisp
-(setq reftex-default-bibliography (expand-file-name "~/bibtex/main.bib"))
-
-;; see org-ref for use of these variables
-(setq org-ref-default-bibliography (expand-file-name "~/bibtex/main.bib"))
-
-(setq org-ref-bibliography-notes (expand-file-name "~/Papers/notes.org"))
-(setq org-ref-pdf-directory (expand-file-name "~/Papers/bibtex-pdfs/"))
-#+END_SRC
-
-#+results:
-: /home/ethanligon/Papers/bibtex-pdfs/
-
-You may want to set some convenient keys for working in your bibtex file. These commands operate on the citation key at point.
-
-If you use helm-bibtex as the citation key completion method you should set these variables too.
 
 #+BEGIN_SRC emacs-lisp
-(setq bibtex-completion-bibliography '("~/bibtex/main.bib" "~/bibtex/ligon.bib")
-      bibtex-completion-library-path (expand-file-name "~/Papers/bibtex-pdfs")
-      bibtex-completion-notes-path (expand-file-name "~/Papers/notes.org"))
+  (use-package citar
+    :no-require
+    :straight (citar :type git :host github :repo "emacs-citar/citar" :includes (citar-org))
+    :custom
+    (org-cite-global-bibliography '("~/bibtex/main.bib"))
+    (org-cite-insert-processor 'citar)
+    (org-cite-follow-processor 'citar)
+    (org-cite-activate-processor 'citar)
+    (citar-bibliography org-cite-global-bibliography)
+    ;; optional: org-cite-insert is also bound to C-c C-x C-@
+    :bind
+    (:map org-mode-map :package org ("C-c b" . #'org-cite-insert)))
 
-;; open pdf with system pdf viewer (works on mac)
-(setq bibtex-completion-pdf-open-function
-  (lambda (fpath)
-    (start-process "open" "*open*" "open" fpath)))
-
-;; alternative
-;; (setq bibtex-completion-pdf-open-function 'org-open-file)
+  ;; Use `citar' with `org-cite'
+  (use-package citar-org
+    :after oc
+    :custom
+    (org-cite-insert-processor 'citar)
+    (org-cite-follow-processor 'citar)
+    (org-cite-activate-processor 'citar))
 #+END_SRC
 
-#+results:
-: /home/ethanligon/Papers/notes.org
-
-There are alternative citation key completion methods.
-- org-ref-helm-cite :: An alternative to helm-bibtex
-- org-ref-ivy-cite :: Uses ivy for key completion
-- org-ref-reftex :: Uses reftex and org-mode for completion (no longer developed)
-
-Finally, add this to your init.el files.
-#+BEGIN_SRC emacs-lisp
-(require 'org-ref)
-(setq bibtex-dialect 'biblatex) 
-#+END_SRC
-
-#+results:
-: biblatex
-
-Go forth and citate.
 
 * Source Blocks
+** Some extra ob files
+  #+begin_src emacs-lisp
+  (straight-use-package 'ob-ipython)
+  (straight-use-package 'ob-asymptote)
+  #+end_src
+
 ** Set up babel
 #+begin_src emacs-lisp
   (setq org-ditaa-jar-path "~/.emacs.d/misc/ditaa.jar")
@@ -1911,8 +1909,8 @@ Go forth and citate.
             (octave . nil)                                             
             (gnuplot . nil)                                            
             (ledger . nil)                                             
-            (asymptote . t)                                          
-            (latex . nil)))) 
+            (asymptote . nil)                                          
+            (latex . nil))))
 
   ; Do not prompt to confirm evaluation
   ; This may be dangerous - make sure you understand the consequences

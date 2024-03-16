@@ -11,12 +11,12 @@
 * Other starter kit bits to load for basic LigonLab use
   Here indicate starter-kits to load by default.
   #+begin_src emacs-lisp :tangle yes
-  (starter-kit-load "python") ;; Breaks w/emacs24?; see http://python.6.n6.nabble.com/problem-with-byte-code-td2012559.html for possible work-around
+  ;(starter-kit-load "python") ;; Breaks w/emacs24?; see http://python.6.n6.nabble.com/problem-with-byte-code-td2012559.html for possible work-around
   (starter-kit-load "org")
   #+end_src
 
 * ELPA Package Archives
- #+BEGIN_SRC emacs-lisp :tangle yes :results silent
+ #+BEGIN_SRC emacs-lisp :tangle no :results silent
  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/") t)
  ;(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
@@ -34,6 +34,8 @@
   (magithub-feature-autoinject t))
   ;(setq magithub-clone-default-directory "~/github"))t
 #+END_SRC
+
+#+RESULTS:
 
 Here's the setup for forge, an alternative to magithub.
 #+begin_src emacs-lisp
@@ -53,8 +55,6 @@ Here's the setup for forge, an alternative to magithub.
     :config
     (exec-path-from-shell-initialize)))
 #+END_SRC
-
-#+RESULTS:
 
 * Some =org-mode= additions
 ** Use inline tasks
